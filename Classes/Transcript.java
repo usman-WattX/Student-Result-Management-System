@@ -29,20 +29,20 @@ public class Transcript {
         }
         return total;
     }
-    // public double getGPA() {
-    //     if (results.isEmpty()) {
-    //         return 0.0;
-    //     }
-    //     double totalMarks = 0.0;
-    //     int totalCredit = 0;
-    //     int creditHours = 0;
-    //     for (ResultEntry r : results) {
-    //         creditHours = r.getCourse().getCreditHours();
-    //         totalMarks += r.getMarksObtained() * creditHours;
-    //         totalCredit += creditHours;
-    //     }
-    //     double average = totalMarks / totalCredit;
-    //     double gpa4Scale = (average / 100) * 4;
-    //     return gpa4Scale;
-    // }
+    public double getGPA() {
+        if (results.isEmpty()) {
+            return 0.0;
+        }
+        double totalMarks = 0.0;
+        int totalCredit = 0;
+        int creditHours = 0;
+        for (ResultEntry r : results) {
+            creditHours = r.getCourse().getCreditHours();
+            totalMarks += r.getMarksObtained() * creditHours;
+            totalCredit += creditHours;
+        }
+        double average = totalMarks / totalCredit;
+        double gpa4Scale = (average / 100) * 4;
+        return gpa4Scale;
+    }
 }
