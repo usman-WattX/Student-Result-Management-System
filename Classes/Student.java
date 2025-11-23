@@ -43,7 +43,7 @@ public abstract class Student {
 
     public void setProgram(String program) {
         this.program = program;
-    }
+    } 
 
     public String getProgram() {
         return program;
@@ -52,7 +52,6 @@ public abstract class Student {
     public void setT(Transcript t) {
         this.t = t;
     }
-
     public Transcript getT() {
         return t;
     }
