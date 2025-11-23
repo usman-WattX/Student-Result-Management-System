@@ -28,11 +28,11 @@ public class ResultEntry {
         return marksObtained;
     }
 
-    // @Override
-    // public String toString() {
-    //     return "Course: " + course.getTitle() +
-    //             " | Marks Obtained: " + marksObtained +
-    //             " | Credit Hours: " + course.getCreditHours();
-    // }
+    @Override
+    public String toString() {
+        return "Course: " + course.getTitle() +
+                " | Marks Obtained: " + marksObtained +
+                " | Credit Hours: " + course.getCreditHours();
+    }
 
 }
