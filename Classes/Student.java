@@ -65,4 +65,13 @@ public abstract class Student {
     public double calculateGPA() {
         return t.getGPA();
     }
+
+    @Override
+    public String toString() {
+        return "Student ID: " + studentId +
+                "\nName: " + name +
+                "\nProgram: " + program +
+                "\nTranscript Details: " + t.toString();
+    }
+
 }

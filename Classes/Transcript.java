@@ -1,4 +1,5 @@
 import java.util.*;
+
 public class Transcript {
     private ArrayList<ResultEntry> results;
 
@@ -29,6 +30,7 @@ public class Transcript {
         }
         return total;
     }
+
     public double getGPA() {
         if (results.isEmpty()) {
             return 0.0;
@@ -45,4 +47,23 @@ public class Transcript {
         double gpa4Scale = (average / 100) * 4;
         return gpa4Scale;
     }
+
+    @Override
+    public String toString() {
+        if (results.isEmpty()) {
+            return "Transcript is empty.";
+        }
+
+        String s = "Results:\n";
+        for (ResultEntry r : results) {
+            s = s + "Course: " + r.getCourse().getCourseName()
+                    + "\nCredit Hours: " + r.getCourse().getCreditHours()
+                    + "\nMarks Obtained: " + r.getMarksObtained();
+        }
+        s = s + "\nTotal Marks: " + getTotalMarks();
+        s = s + "\nGPA: " + String.format("%.2f", getGPA()) + "\n";
+
+        return s;
+    }
+
 }
