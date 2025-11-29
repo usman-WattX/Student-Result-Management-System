@@ -23,6 +23,7 @@ public abstract class Student {
         this.name = name;
         this.program = program;
         this.t = t;
+        totalStudents++;
     }
 
     public void setStudentId(String studentId) {

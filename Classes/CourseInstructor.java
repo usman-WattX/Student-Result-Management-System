@@ -31,7 +31,7 @@ public class CourseInstructor {
     }
 
     public String toString() {
-        return "COURSE INSTRUCTOR \nName = " + name + 
-        "| Qualification = " + qualification;
+        return ("COURSE INSTRUCTOR \nName = " + name + 
+        " | Qualification = " + qualification);
     }
 }
