@@ -66,22 +66,18 @@ public class Course {
     public void setCrsInst(CourseInstructor crsInst) {
         this.crsInst = crsInst;
     }
-    
-    //Display keliye yaha toString() method bnana ya displayCourseDetails()??
 
+    public String toString() {
+        return ("COURSE DETAILS \nCourse Code = " + courseCode + 
+    " | Title = " + title + 
+    " | Credit Hours = " + creditHours + 
+    " | Instructor = " + crsInst.getName());
+    }
 
-    // public String toString() {
-    //     return ("COURSE DETAILS 
-    // \nCourse Code = " + courseCode + 
-    // " | Title = " + title + 
-    // " | Credit Hours = " + creditHours + 
-    // " | Instructor = " + crsInst.getName());
-    // }
-
-    // public void displayCourseDetails(){
-    //     System.out.println("COURSE DETAILS \nCourse Code = " + courseCode + 
-    // " | Title = " + title + 
-    // " | Credit Hours = " + creditHours + 
-    // " | Instructor = " + crsInst.getName());
-    // }
+    public void displayCourseDetails(){
+        System.out.println("COURSE DETAILS \nCourse Code = " + courseCode + 
+    " | Title = " + title + 
+    " | Credit Hours = " + creditHours + 
+    " | Instructor = " + crsInst.getName());
+    }
 }

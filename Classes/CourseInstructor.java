@@ -29,4 +29,9 @@ public class CourseInstructor {
     public void setQualification(String qualification) {
         this.qualification = qualification;
     }
+
+    public String toString() {
+        return "COURSE INSTRUCTOR \nName = " + name + 
+        "| Qualification = " + qualification;
+    }
 }

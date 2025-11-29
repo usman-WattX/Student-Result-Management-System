@@ -56,7 +56,7 @@ public class Transcript {
 
         String s = "Results:\n";
         for (ResultEntry r : results) {
-            s = s + "Course: " + r.getCourse().getCourseName()
+            s = s + "Course: " + r.getCourse().getCourseCode()
                     + "\nCredit Hours: " + r.getCourse().getCreditHours()
                     + "\nMarks Obtained: " + r.getMarksObtained();
         }

@@ -5,7 +5,6 @@
 
 import java.util.*;
 public class RecordList {
-    //Abhi is class ko generic <T> nhai bnaya jab parhe ge tab kardun ga!
     private ArrayList<Student> students;
     private ArrayList<Course> courses;
     private ArrayList<Transcript> transcripts;
