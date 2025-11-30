@@ -9,26 +9,21 @@ public class Course {
     private String title;
     private int creditHours;
     private CourseInstructor crsInst;
-    public static int totalCourses = 0;
+    private static int totalCourses = 0;
 
     public Course() {
-        courseCode = "";
-        title = "";
-        creditHours = 0;
-        crsInst = new CourseInstructor();
+        setCourseCode("------");
+        setTitle("------");
+        setCreditHours(0);
+        setCrsInst(new CourseInstructor());
+        totalCourses++;
     }
 
     public Course(String courseCode, String title, int creditHours, CourseInstructor crsInst) {
-        this.courseCode = courseCode;
-        this.title = title;
-        if(creditHours >= 0 && creditHours <= 4){
-            this.creditHours = creditHours;
-        }else if(creditHours < 0){
-            System.out.println("Credit Hours can't be less than Zero!");
-        }else{
-            System.out.println("Credit Hours can't be more than Four!");
-        }
-        this.crsInst = crsInst;
+        setCourseCode(courseCode);
+        setTitle(title);
+        setCreditHours(creditHours);
+        setCrsInst(crsInst);
         totalCourses++;
     }
 
@@ -36,26 +31,33 @@ public class Course {
         return courseCode;
     }
     public void setCourseCode(String courseCode) {
-        this.courseCode = courseCode;
+        if (courseCode == null || courseCode.trim().isEmpty()) {
+            throw new IllegalArgumentException("Course Code Cannot be Empty!");
+        }else{
+            this.courseCode = courseCode.trim();
+        }
     }
 
     public String getTitle() {
         return title;
     }
     public void setTitle(String title) {
-        this.title = title;
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Title Cannot be Empty!");
+        }else{
+            this.title = title.trim();
+        }
     }
 
     public int getCreditHours() {
         return creditHours;
     }
+
     public void setCreditHours(int creditHours) {
         if(creditHours >= 0 && creditHours <= 4){
             this.creditHours = creditHours;
-        }else if(creditHours < 0){
-            System.out.println("Credit Hours can't be less than Zero!");
-        }else{
-            System.out.println("Credit Hours can't be more than Four!");
+        }else {
+            throw new IllegalArgumentException("Credit Hours Must be Between 0 and 4!");
         }
     }   
 
@@ -64,18 +66,26 @@ public class Course {
     }
 
     public void setCrsInst(CourseInstructor crsInst) {
-        this.crsInst = crsInst;
+        if (crsInst == null) {
+            this.crsInst = new CourseInstructor();
+        }else{
+            this.crsInst = crsInst;
+        }
+    }
+
+    public int getTotalCourses(){
+        return totalCourses;
     }
 
     public String toString() {
-        return ("COURSE DETAILS \nCourse Code: " + courseCode + 
+        return ("COURSE DETAILS: \nCourse Code: " + courseCode + 
     " | Title: " + title + 
     " | Credit Hours: " + creditHours + 
     " | Instructor: " + crsInst.getName());
     }
 
     public void displayCourseDetails(){
-        System.out.println("COURSE DETAILS \nCourse Code: " + courseCode + 
+        System.out.println("COURSE DETAILS: \nCourse Code: " + courseCode + 
     " | Title: " + title + 
     " | Credit Hours: " + creditHours + 
     " | Instructor: " + crsInst.getName());

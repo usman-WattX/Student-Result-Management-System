@@ -85,4 +85,41 @@ public class RecordList {
     public void setTranscripts(ArrayList<Transcript> transcripts) {
         this.transcripts = transcripts;
     }
+
+    public void showAllStudents() {
+        if (students.isEmpty()) {
+            System.out.println("No students found!");
+            return;
+        }
+
+        System.out.println("\nALL STUDENTS");
+        for (int i = 0; i < students.size(); i++) {
+            System.out.println("\n" + students.get(i).toString());
+        }
+    }
+
+    public void showAllCourses() {
+        if (courses.isEmpty()) {
+            System.out.println("No Courses found!");
+            return;
+        }
+
+        System.out.println("\nALL COURSES");
+        for (int i = 0; i < courses.size(); i++) {
+            System.out.println("\n" + courses.get(i).toString());
+        }
+    }
+
+    public void showAllTranscripts() {
+        if (students.isEmpty()) {
+            System.out.println("No Transcripts found!");
+            return;
+        }
+
+        System.out.println("\nALL STUDENTS");
+        for (int i = 0; i < transcripts.size(); i++) {
+            System.out.println("\n" + transcripts.get(i).toString());
+        }
+    }
+
 }

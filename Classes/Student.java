@@ -6,18 +6,19 @@ public abstract class Student implements ResultCalculator {
     private static int studentCounter = 0;
 
     public Student() {
-        studentId = "S" + (++studentCounter);
+        studentCounter++;
+        studentId = "S" + (studentCounter);
         setName("Unknown");
         setProgram("Unknown");
         setT(null);
     }
 
     public Student(String name, String program, Transcript t) {
+        studentCounter++;
+        studentId = "S" + (studentCounter);
         setName(name);
         setProgram(program);
         setT(t);
-        studentCounter++;
-        studentId = "S" + (studentCounter);
     }
 
     public void setName(String name) {
@@ -34,7 +35,7 @@ public abstract class Student implements ResultCalculator {
             throw new IllegalArgumentException("Program cannot be empty");
         } 
         else if (!program.equalsIgnoreCase("Science") && !program.equalsIgnoreCase("Arts") && !program.equalsIgnoreCase("Engineering")) {
-            throw new IllegalArgumentException("Program must be Science, Arts, or Engineering");
+            throw new IllegalArgumentException("Program must be Science, Arts or Engineering");
         } 
         else {
             this.program = program.trim();
@@ -75,6 +76,10 @@ public abstract class Student implements ResultCalculator {
         }
     }
 
+    public int getTotalStudent(){
+        return studentCounter;
+    }
+
     public double calculateGPA() {
         return t.getGPA();
     }
@@ -112,7 +117,7 @@ public abstract class Student implements ResultCalculator {
             return "C-";
         else if (percent >= 54)
             return "D+";
-        else if (percent >= 50)
+        else if (percent >= passMarks)
             return "D";
         else
             return "F";

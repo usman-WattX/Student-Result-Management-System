@@ -7,31 +7,40 @@ public class CourseInstructor {
     private String qualification;
 
     public CourseInstructor() {
-        name = "";
-        qualification = "";
+        setName("------");
+        setQualification("------");
     }
 
     public CourseInstructor(String name, String qualification) {
-        this.name = name;
-        this.qualification = qualification;
+        setName(name);
+        setQualification(qualification);
     }
 
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
-        this.name = name;
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name Cannot Be Empty!");
+        }else{
+            this.name = name.trim();
+        }
     }
 
     public String getQualification() {
         return qualification;
     }
     public void setQualification(String qualification) {
-        this.qualification = qualification;
+        if (qualification == null || qualification.trim().isEmpty()) {
+            throw new IllegalArgumentException("Qualification Cannot Be Empty!");
+        }else{
+            this.qualification = qualification.trim();
+        }
     }
 
     public String toString() {
-        return ("COURSE INSTRUCTOR \nName: " + name + 
+        return ("COURSE INSTRUCTOR: \nName: " + name + 
         " | Qualification: " + qualification);
     }
 }

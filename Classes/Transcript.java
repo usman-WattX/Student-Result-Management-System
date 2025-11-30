@@ -68,9 +68,9 @@ public class Transcript {
         String s = "Results:\n";
         for (ResultEntry r : results) {
             s += "Course Code: " + r.getCourse().getCourseCode()
-                    + "\nCourse: " + r.getCourse().getTitle()
-                    + "\nCredit Hours: " + r.getCourse().getCreditHours()
-                    + "\nMarks Obtained: " + r.getMarksObtained() + "\n";
+                + " | Course: " + r.getCourse().getTitle()
+                + " | Credit Hours: " + r.getCourse().getCreditHours()
+                + " | Marks Obtained: " + r.getMarksObtained() + "\n";
         }
         s += "Total Marks: " + getTotalMarks();
         s += "\nGPA: " + String.format("%.2f", getGPA()) + "\n";
