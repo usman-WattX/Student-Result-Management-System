@@ -4,7 +4,8 @@
 //  StaƟc: staƟc int totalStudents
 //  Methods: addCourse(), calculateGPA(), displayResults()
 //  Subclasses: ScienceStudent, ArtsStudent, EngineeringStudent
-public abstract class Student {
+
+public abstract class Student implements ResultCalculator{
     protected String studentId;
     protected String name;
     protected String program;
@@ -67,6 +68,48 @@ public abstract class Student {
         return t.getGPA();
     }
 
+    public double calculateTotal(){
+        return t.getTotalMarks();
+    }
+
+    public double calculatePercentage(){
+        int totalCrs = t.getResults().size();
+        if (totalCrs == 0 ) {
+            return 0.0;
+        }else{
+            double percent = (calculateTotal() / (totalCrs * 100)) * 100;
+            return percent;
+        }
+        
+    }
+
+    public String calculateGrade(){
+        double percent = calculatePercentage();
+        if (percent >= 85) {
+            return "A";
+        } else if(percent <= 84 && percent >= 80){
+            return "A-";
+        } else if(percent <= 79 && percent >= 75){
+            return "B+";
+        } else if(percent <= 74 && percent >= 71){
+            return "B";
+        } else if(percent <= 70 && percent >= 68){
+            return "B-";
+        } else if(percent <= 67 && percent >= 64){
+            return "C+";
+        } else if(percent <= 63 && percent >= 61){
+            return "C";
+        } else if(percent <= 60 && percent >= 58){
+            return "C-";
+        } else if(percent <= 57 && percent >= 54){
+            return "D+";
+        } else if(percent <= 53 && percent >= 50){
+            return "D";
+        } else{
+            return "F";
+        }
+    }
+
     @Override
     public String toString() {
         return "Student ID: " + studentId +
@@ -74,5 +117,4 @@ public abstract class Student {
                 "\nProgram: " + program +
                 "\nTranscript Details: " + t.toString();
     }
-
 }

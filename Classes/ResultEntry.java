@@ -9,7 +9,11 @@ public class ResultEntry {
 
     public ResultEntry(Course course, double marksObtained) {
         this.course = course;
-        this.marksObtained = marksObtained;
+        if (marksObtained >= 0 && marksObtained <= 100) {
+         this.marksObtained = marksObtained;   
+        }else{
+            System.out.println("Marks Should not be less than Zero or Greater than 100!");
+        }
     }
 
     public void setCourse(Course course) {
@@ -21,7 +25,11 @@ public class ResultEntry {
     }
 
     public void setMarksObtained(double marksObtained) {
-        this.marksObtained = marksObtained;
+        if (marksObtained >= 0 && marksObtained <= 100) {
+         this.marksObtained = marksObtained;   
+        }else{
+            System.out.println("Marks Should not be less than Zero or Greater than 100!");
+        }
     }
 
     public double getMarksObtained() {

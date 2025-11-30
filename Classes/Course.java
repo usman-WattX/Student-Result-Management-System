@@ -68,16 +68,16 @@ public class Course {
     }
 
     public String toString() {
-        return ("COURSE DETAILS \nCourse Code = " + courseCode + 
-    " | Title = " + title + 
-    " | Credit Hours = " + creditHours + 
-    " | Instructor = " + crsInst.getName());
+        return ("COURSE DETAILS \nCourse Code: " + courseCode + 
+    " | Title: " + title + 
+    " | Credit Hours: " + creditHours + 
+    " | Instructor: " + crsInst.getName());
     }
 
     public void displayCourseDetails(){
-        System.out.println("COURSE DETAILS \nCourse Code = " + courseCode + 
-    " | Title = " + title + 
-    " | Credit Hours = " + creditHours + 
-    " | Instructor = " + crsInst.getName());
+        System.out.println("COURSE DETAILS \nCourse Code: " + courseCode + 
+    " | Title: " + title + 
+    " | Credit Hours: " + creditHours + 
+    " | Instructor: " + crsInst.getName());
     }
 }

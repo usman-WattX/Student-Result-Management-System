@@ -51,12 +51,13 @@ public class Transcript {
     @Override
     public String toString() {
         if (results.isEmpty()) {
-            return "Transcript is empty.";
+            return "Transcript is Empty.";
         }
 
         String s = "Results:\n";
         for (ResultEntry r : results) {
-            s = s + "Course: " + r.getCourse().getCourseCode()
+            s = s + "Course Code: " + r.getCourse().getCourseCode()
+                    + "\nCourse: " + r.getCourse().getTitle()
                     + "\nCredit Hours: " + r.getCourse().getCreditHours()
                     + "\nMarks Obtained: " + r.getMarksObtained();
         }
