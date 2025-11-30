@@ -3,20 +3,19 @@ public class ResultEntry {
     private double marksObtained;
 
     public ResultEntry() {
-        course = null;
-        marksObtained = 0.0;
+        setCourse(null);
+        setMarksObtained(0.0);
     }
 
     public ResultEntry(Course course, double marksObtained) {
-        this.course = course;
-        if (marksObtained >= 0 && marksObtained <= 100) {
-         this.marksObtained = marksObtained;   
-        }else{
-            System.out.println("Marks Should not be less than Zero or Greater than 100!");
-        }
+        setCourse(course);
+        setMarksObtained(marksObtained);
     }
 
     public void setCourse(Course course) {
+        if (course == null) {
+            throw new IllegalArgumentException("Course cannot be null");
+        }
         this.course = course;
     }
 
@@ -25,11 +24,10 @@ public class ResultEntry {
     }
 
     public void setMarksObtained(double marksObtained) {
-        if (marksObtained >= 0 && marksObtained <= 100) {
-         this.marksObtained = marksObtained;   
-        }else{
-            System.out.println("Marks Should not be less than Zero or Greater than 100!");
+        if (marksObtained < 0 || marksObtained > 100) {
+            throw new IllegalArgumentException("Marks must be between 0 and 100");
         }
+        this.marksObtained = marksObtained;
     }
 
     public double getMarksObtained() {
@@ -42,5 +40,4 @@ public class ResultEntry {
                 " | Marks Obtained: " + marksObtained +
                 " | Credit Hours: " + course.getCreditHours();
     }
-
 }

@@ -8,11 +8,15 @@ public class Transcript {
     }
 
     public Transcript(ArrayList<ResultEntry> results) {
-        this.results = results;
+        setResults(results); 
     }
 
     public void setResults(ArrayList<ResultEntry> results) {
-        this.results = results;
+        if (results == null) {
+            this.results = new ArrayList<ResultEntry>();
+        } else {
+            this.results = results;
+        }
     }
 
     public ArrayList<ResultEntry> getResults() {
@@ -20,6 +24,15 @@ public class Transcript {
     }
 
     public void addResultEntry(ResultEntry r) {
+        if (r == null) {
+            throw new IllegalArgumentException("ResultEntry cannot be null");
+        }
+        if (r.getCourse() == null) {
+            throw new IllegalArgumentException("Course in ResultEntry cannot be null");
+        }
+        if (r.getMarksObtained() < 0 || r.getMarksObtained() > 100) {
+            throw new IllegalArgumentException("Marks must be between 0 and 100");
+        }
         results.add(r);
     }
 
@@ -37,15 +50,13 @@ public class Transcript {
         }
         double totalMarks = 0.0;
         int totalCredit = 0;
-        int creditHours = 0;
         for (ResultEntry r : results) {
-            creditHours = r.getCourse().getCreditHours();
+            int creditHours = r.getCourse().getCreditHours();
             totalMarks += r.getMarksObtained() * creditHours;
             totalCredit += creditHours;
         }
         double average = totalMarks / totalCredit;
-        double gpa4Scale = (average / 100) * 4;
-        return gpa4Scale;
+        return (average / 100) * 4;
     }
 
     @Override
@@ -56,15 +67,14 @@ public class Transcript {
 
         String s = "Results:\n";
         for (ResultEntry r : results) {
-            s = s + "Course Code: " + r.getCourse().getCourseCode()
+            s += "Course Code: " + r.getCourse().getCourseCode()
                     + "\nCourse: " + r.getCourse().getTitle()
                     + "\nCredit Hours: " + r.getCourse().getCreditHours()
-                    + "\nMarks Obtained: " + r.getMarksObtained();
+                    + "\nMarks Obtained: " + r.getMarksObtained() + "\n";
         }
-        s = s + "\nTotal Marks: " + getTotalMarks();
-        s = s + "\nGPA: " + String.format("%.2f", getGPA()) + "\n";
+        s += "Total Marks: " + getTotalMarks();
+        s += "\nGPA: " + String.format("%.2f", getGPA()) + "\n";
 
         return s;
     }
-
 }

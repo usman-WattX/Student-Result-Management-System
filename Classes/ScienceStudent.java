@@ -3,16 +3,20 @@ public class ScienceStudent extends Student {
 
     public ScienceStudent() {
         super();
-        labGroup = null;
+        setLabGroup("Unknown");
     }
 
-    public ScienceStudent(String studentId, String name, String program, Transcript t, String labGroup) {
-        super(studentId, name, program, t);
-        this.labGroup = labGroup;
+    public ScienceStudent(String name, String program, Transcript t, String labGroup) {
+        super(name, program, t);
+        setLabGroup(labGroup);
     }
 
     public void setLabGroup(String labGroup) {
-        this.labGroup = labGroup;
+        if (labGroup == null || labGroup.trim().isEmpty()) {
+            throw new IllegalArgumentException("Lab Group cannot be empty");
+        } else {
+            this.labGroup = labGroup.trim();
+        }
     }
 
     public String getLabGroup() {
