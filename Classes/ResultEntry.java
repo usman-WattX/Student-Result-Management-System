@@ -1,4 +1,6 @@
-public class ResultEntry {
+import java.io.*;
+
+public class ResultEntry implements Serializable{
     private Course course;
     private double marksObtained;
 

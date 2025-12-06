@@ -3,8 +3,9 @@
 //  Composi􀆟on: has-a CourseInstructor
 //  Sta􀆟c: sta􀆟c int totalCourses
 //  Methods: displayCourseDetails()
+import java.io.*;
 
-public class Course {
+public class Course implements Serializable{
     private String courseCode;
     private String title;
     private int creditHours;

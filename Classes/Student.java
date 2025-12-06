@@ -1,4 +1,6 @@
-public abstract class Student implements ResultCalculator {
+import java.io.*;
+
+public abstract class Student implements ResultCalculator, Serializable{
     protected String studentId;
     protected String name;
     protected String program;

@@ -1,8 +1,9 @@
 // CourseInstructor
 //  A􀆩ributes: name, qualifica􀆟on
 //  Exists only as part of a Course
+import java.io.*;
 
-public class CourseInstructor {
+public class CourseInstructor implements Serializable {
     private String name;
     private String qualification;
 

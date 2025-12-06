@@ -1,93 +1,130 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
+@SuppressWarnings("unchecked")
 
-public class DataStore {
-    public void saveToFile(String fileName, Object item) {
-        FileOutputStream fos = null;
-        ObjectOutputStream oos = null;
-        try {
-            fos = new FileOutputStream(fileName, true);
-            oos = new AppendableObjectOutputStream(fos);
-            oos.writeObject(item);
-            System.out.println("Object saved/appended to " + fileName);
-        } catch (IOException e) {
-            System.err.println("Error saving object: " + e.getMessage());
-        } finally {
-            try {
-                if (oos != null)
-                    oos.close();
-                if (fos != null)
-                    fos.close();
-            } catch (IOException e) {
-                System.err.println("Error closing streams: " + e.getMessage());
-            }
+public class DataStore <T>{
+    
+    public void saveToFile(String fileName, ArrayList<T> items){
+
+        if(items == null || items.isEmpty()){
+            System.out.println("Nothing to Save!");
+            return;
         }
-    }
-    public void saveToFile(String fileName, List<Object> items) {
-        FileOutputStream fos = null;
-        ObjectOutputStream oos = null;
+
+        FileOutputStream fileOut = null;
+        ObjectOutputStream writer = null;
         try {
-            fos = new FileOutputStream(fileName);
-            oos = new ObjectOutputStream(fos);
-            for (Object item : items) {
-                oos.writeObject(item);
+            fileOut = new FileOutputStream(fileName, true);
+            writer = new Append(fileOut);
+            
+            for (int i = 0; i < items.size(); i++){
+                writer.writeObject(items.get(i));
             }
-            System.out.println("List of objects saved to " + fileName);
-        } catch (IOException e) {
-            System.err.println("Error saving list: " + e.getMessage());
-        } finally {
-            try {
-                if (oos != null)
-                    oos.close();
-                if (fos != null)
-                    fos.close();
-            } catch (IOException e) {
-                System.err.println("Error closing streams: " + e.getMessage());
-            }
-        }
-    }
-    public List<Object> loadFromFile(String fileName) {
-        List<Object> items = new ArrayList<>();
-        FileInputStream fis = null;
-        ObjectInputStream ois = null;
-        try {
-            fis = new FileInputStream(fileName);
-            ois = new ObjectInputStream(fis);
-            while (true) {
+
+            System.out.println("Data Saved Successfully!\n"); 
+        } catch(FileNotFoundException e){
+            System.out.println("File Not Find:: " + fileName);
+        } catch(IOException e){
+            System.out.println("Error Writing the File" + e.getMessage());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally{
+                if(writer != null){
                 try {
-                    Object obj = ois.readObject();
-                    items.add(obj);
-                } catch (EOFException e) {
-                    break;
-                } catch (ClassNotFoundException e) {
-                    System.err.println("Class not found: " + e.getMessage());
+                    writer.close();
+                } catch (IOException e) {
+                    System.out.println("Error Closing Writer: " + e.getMessage());
                 }
             }
-            System.out.println("Data loaded from " + fileName);
-        } catch (FileNotFoundException e) {
-            System.err.println("File not found: " + fileName);
-        } catch (IOException e) {
-            System.err.println("Error loading data: " + e.getMessage());
-        } finally {
-            try {
-                if (ois != null)
-                    ois.close();
-                if (fis != null)
-                    fis.close();
-            } catch (IOException e) {
-                System.err.println("Error closing streams: " + e.getMessage());
+        }
+    }
+
+    public void saveToFile(String fileName, T item){
+
+        if(item == null){
+            System.out.println("Nothing to Save!");
+            return;
+        }
+
+        FileOutputStream fileOut = null;
+        ObjectOutputStream writer = null;
+        try {
+            fileOut = new FileOutputStream(fileName, true);
+            writer = new Append(fileOut);
+            
+            writer.writeObject(item);
+            
+            System.out.println("Object Saved Successfully!\n"); 
+        } catch(FileNotFoundException e){
+            System.out.println("File Not Find:: " + fileName);
+        } catch(IOException e){
+            System.out.println("Error Writing the File" + e.getMessage());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally{
+                if(writer != null){
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    System.out.println("Error Closing Writer: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public ArrayList<T> loadFromFile(String fileName){
+
+        ArrayList<T> items = new ArrayList<>();
+
+        File fl = new File(fileName);
+        if(!fl.exists()){
+            return items;
+        }
+
+        FileInputStream fileIn = null; 
+        ObjectInputStream reader= null; 
+        try{
+            fileIn = new FileInputStream(fileName);
+            reader = new ObjectInputStream(fileIn);
+            
+            while(true){
+                try {
+                    T item = (T) reader.readObject();
+                    items.add(item);
+                } catch (EOFException e) {
+                    break;
+                }
+            }
+
+            System.out.println("Data Loaded from File: " + fileName);
+        }catch(FileNotFoundException e){
+            System.out.println("File Not Find: " + fileName);
+        }catch(IOException e){
+            System.out.println("Error Reading the File: " + e.getMessage());
+        }catch(ClassNotFoundException e){
+            System.out.println("Class Type Mismatch: " + e.getMessage());
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    System.out.println("Error Closing Reader: " + e.getMessage());
+                }
             }
         }
         return items;
     }
 }
 
-class AppendableObjectOutputStream extends ObjectOutputStream {
-    public AppendableObjectOutputStream(OutputStream out) throws IOException {
-        super(out);
+class Append extends ObjectOutputStream{
+
+    public Append(OutputStream file) throws IOException{
+        super(file);
     }
 
-    @Override
-    protected void writeStreamHeader() throws IOException {
+    public void writeStreamHeader() throws IOException{
+        reset();
     }
 }

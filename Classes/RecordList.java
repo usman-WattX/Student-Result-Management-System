@@ -2,11 +2,11 @@
 //  A􀆩ributes: List<T> items
 //  Methods: add(T item), remove(String id), getAll()
 //  Usage: stores Students, Courses, or Transcripts
-
 import java.util.*;
-public class RecordList<T> { 
-    private ArrayList<T> items;
+import java.io.*;
 
+public class RecordList<T> implements Serializable{ 
+    private ArrayList<T> items;
 
     public RecordList() {
         this(new ArrayList<T>());
