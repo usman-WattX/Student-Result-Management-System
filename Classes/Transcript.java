@@ -2,14 +2,24 @@ import java.util.*;
 import java.io.*;
 
 public class Transcript implements Serializable{
+    private String studentId;
     private ArrayList<ResultEntry> results;
 
     public Transcript() {
+        studentId = "unknown";
         results = new ArrayList<ResultEntry>();
     }
 
-    public Transcript(ArrayList<ResultEntry> results) {
+    public Transcript(ArrayList<ResultEntry> results, String studentId) {
+        setStudentId(studentId);
         setResults(results); 
+    }
+
+    public String getStudentId() {
+        return studentId;
+    }
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 
     public void setResults(ArrayList<ResultEntry> results) {
@@ -66,7 +76,7 @@ public class Transcript implements Serializable{
             return "Transcript is Empty.";
         }
 
-        String s = "Results:\n";
+        String s = "Transcript for Student: " + studentId + "\nResults:\n";
         for (ResultEntry r : results) {
             s += "Course Code: " + r.getCourse().getCourseCode()
                 + " | Course: " + r.getCourse().getTitle()

@@ -27,13 +27,15 @@ public class RecordList<T> implements Serializable{
     }
 
     public void removeItem(String id){
-        for (int i = 0; i < items.size(); i++){
-            if(items.get(i) instanceof Student && ((Student) items.get(i)).getStudentId().equals(id)){
+        for (int i = items.size() - 1; i >= 0; i--) {
+            T obj = items.get(i);
+
+            if (obj instanceof Student && ((Student) obj).getStudentId().equals(id)) {
                 items.remove(i);
-                break;
-            }else if(items.get(i) instanceof Course && ((Course) items.get(i)).getCourseCode().equals(id)){
+            } else if (obj instanceof Course && ((Course) obj).getCourseCode().equals(id)) {
                 items.remove(i);
-                break;
+            } else if (obj instanceof Transcript && ((Transcript) obj).getStudentId().equals(id)) {
+                items.remove(i);
             }
         }
     }
