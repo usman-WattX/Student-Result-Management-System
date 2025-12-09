@@ -249,5 +249,58 @@ public class MainGUI {
                 courseStore.updateFile("courses.dat", courses);
             }
         });
+
+        // ---------------- Add Course ----------------
+        addCourseBtn.addActionListener(ae -> {
+            JTextField codeField = new JTextField();
+            JTextField titleField = new JTextField();
+            JTextField creditField = new JTextField();
+            JTextField instrNameField = new JTextField();
+            JTextField instrQualField = new JTextField();
+
+            Object[] input = {
+                    "Course Code:", codeField,
+                    "Course Title:", titleField,
+                    "Credit Hours:", creditField,
+                    "Instructor Name:", instrNameField,
+                    "Instructor Qualification:", instrQualField
+            };
+
+            int result = JOptionPane.showConfirmDialog(frame, input, "Add Course",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+                try {
+                    String code = codeField.getText().trim();
+                    String title = titleField.getText().trim();
+                    int credits = Integer.parseInt(creditField.getText().trim());
+                    String instrName = instrNameField.getText().trim();
+                    String instrQual = instrQualField.getText().trim();
+
+                    if (code.isEmpty() || title.isEmpty() || instrName.isEmpty() || instrQual.isEmpty()) {
+                        JOptionPane.showMessageDialog(frame, "All fields must be filled!");
+                        return;
+                    }
+
+                    // Properly create CourseInstructor with name & qualification
+                    CourseInstructor instructor = new CourseInstructor(instrName, instrQual);
+                    Course newCourse = new Course(code, title, credits, instructor);
+
+                    courses.add(newCourse);
+                    courseModel.addRow(new Object[] { newCourse.getCourseCode(), newCourse.getTitle(),
+                            newCourse.getCreditHours(), newCourse.getCrsInst().getName() });
+
+                    // Persist the new course
+                    courseStore.appendToFile("courses.dat", newCourse);
+
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Credit Hours must be a number!");
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage());
+                }
+            }
+        });
+
     }
+
 }
