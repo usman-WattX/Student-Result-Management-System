@@ -42,35 +42,11 @@ public class RecordList<T> implements Serializable{
                 found = true;
                 System.out.println("Course Removed Successfully!");
                 break;
-            } else if (obj instanceof Transcript && ((Transcript) obj).getStudentId().equals(id)) {
-                items.remove(i);
-                break;
             }
         }
 
         if (!found) {
             System.out.println("ID Not Found!");
-        }
-    }
-
-
-
-    public void showAllItems() {
-        if (items.isEmpty()) {
-            System.out.println("No Records Found!");
-            return;
-        }
-
-        if (items.get(0) instanceof Student) {
-            System.out.println("ALL STUDENTS:");
-        } else if (items.get(0) instanceof Course) {
-            System.out.println("ALL COURSES:");
-        } else if (items.get(0) instanceof Transcript) {
-            System.out.println("ALL TRANSCRIPTS:");
-        }
-
-        for (int i = 0; i < items.size(); i++) {
-            System.out.println(items.get(i).toString());
         }
     }
 }
