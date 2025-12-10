@@ -12,59 +12,10 @@ public class MainGUI {
 
         ArrayList<Student> students = studentStore.loadFromFile("students.dat");
         ArrayList<Course> courses = courseStore.loadFromFile("courses.dat");
-
-        // Preload 5 students if file is empty
         if (students.isEmpty()) {
-
-            // Sample courses for student results
-            Course cs = new Course("CS101", "Java Programming", 4, new CourseInstructor("Dr. Ahmed", "N/A"));
-            Course phy = new Course("PHY101", "Physics", 3, new CourseInstructor("Prof. Khan", "N/A"));
-            Course math = new Course("MATH101", "Calculus", 4, new CourseInstructor("Dr. Sara", "N/A"));
-            courses.add(cs);
-            courses.add(phy);
-            courses.add(math);
-
-            Transcript t1 = new Transcript();
-            t1.addResultEntry(new ResultEntry(cs, 85));
-            t1.addResultEntry(new ResultEntry(phy, 75));
-            t1.addResultEntry(new ResultEntry(math, 90));
-            Student s1 = new ScienceStudent("Ali Raza", "Science", t1, "G1");
-
-            Transcript t2 = new Transcript();
-            t2.addResultEntry(new ResultEntry(cs, 78));
-            t2.addResultEntry(new ResultEntry(phy, 82));
-            t2.addResultEntry(new ResultEntry(math, 70));
-            Student s2 = new ArtsStudent("Hassan Ahmed", "Arts", t2, "Painting");
-
-            Transcript t3 = new Transcript();
-            t3.addResultEntry(new ResultEntry(cs, 65));
-            t3.addResultEntry(new ResultEntry(phy, 72));
-            t3.addResultEntry(new ResultEntry(math, 68));
-            Student s3 = new EngineeringStudent("Usman Khalid", "Engineering", t3, "TechCorp");
-
-            Transcript t4 = new Transcript();
-            t4.addResultEntry(new ResultEntry(cs, 88));
-            t4.addResultEntry(new ResultEntry(phy, 91));
-            t4.addResultEntry(new ResultEntry(math, 85));
-            Student s4 = new ScienceStudent("Ahsan Farooq", "Science", t4, "G2");
-
-            Transcript t5 = new Transcript();
-            t5.addResultEntry(new ResultEntry(cs, 80));
-            t5.addResultEntry(new ResultEntry(phy, 76));
-            t5.addResultEntry(new ResultEntry(math, 79));
-            Student s5 = new ArtsStudent("Bilal Tariq", "Arts", t5, "Music");
-
-            students.add(s1);
-            students.add(s2);
-            students.add(s3);
-            students.add(s4);
-            students.add(s5);
-
-            // Save preloaded students & courses
-            studentStore.updateFile("students.dat", students);
-            courseStore.updateFile("courses.dat", courses);
+            preloadData(students, courses, studentStore, courseStore);
         }
-
+//YAHAN TK DONE
         JFrame frame = new JFrame("Student Result Management System");
         frame.setSize(1000, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -301,6 +252,72 @@ public class MainGUI {
             }
         });
 
+    }
+
+    public static void preloadData(ArrayList<Student> students, ArrayList<Course> courses,DataStore<Student> studentStore, DataStore<Course> courseStore) {
+        CourseInstructor csInstructor = new CourseInstructor("Dr. Ahmed", "PhD");
+        CourseInstructor phyInstructor = new CourseInstructor("Prof. Khan", "MSc");
+        CourseInstructor mathInstructor = new CourseInstructor("Dr. Sara", "PhD");
+        Course cs = new Course("CS101", "Java Programming", 4, csInstructor);
+        Course phy = new Course("PHY101", "Physics", 3, phyInstructor);
+        Course math = new Course("MATH101", "Calculus", 4, mathInstructor);
+        courses.add(cs);
+        courses.add(phy);
+        courses.add(math);
+
+        Transcript t1 = new Transcript();
+        ResultEntry t1_cs = new ResultEntry(cs, 85);
+        ResultEntry t1_phy = new ResultEntry(phy, 75);
+        ResultEntry t1_math = new ResultEntry(math, 90);
+        t1.addResultEntry(t1_cs);
+        t1.addResultEntry(t1_phy);
+        t1.addResultEntry(t1_math);
+        Student s1 = new ScienceStudent("Ali Raza", "Science", t1, "G1");
+
+        Transcript t2 = new Transcript();
+        ResultEntry t2_cs = new ResultEntry(cs, 78);
+        ResultEntry t2_phy = new ResultEntry(phy, 82);
+        ResultEntry t2_math = new ResultEntry(math, 70);
+        t2.addResultEntry(t2_cs);
+        t2.addResultEntry(t2_phy);
+        t2.addResultEntry(t2_math);
+        Student s2 = new ArtsStudent("Hassan Ahmed", "Arts", t2, "Painting");
+
+        Transcript t3 = new Transcript();
+        ResultEntry t3_cs = new ResultEntry(cs, 65);
+        ResultEntry t3_phy = new ResultEntry(phy, 72);
+        ResultEntry t3_math = new ResultEntry(math, 68);
+        t3.addResultEntry(t3_cs);
+        t3.addResultEntry(t3_phy);
+        t3.addResultEntry(t3_math);
+        Student s3 = new EngineeringStudent("Usman Khalid", "Engineering", t3, "TechCorp");
+
+        Transcript t4 = new Transcript();
+        ResultEntry t4_cs = new ResultEntry(cs, 88);
+        ResultEntry t4_phy = new ResultEntry(phy, 91);
+        ResultEntry t4_math = new ResultEntry(math, 85);
+        t4.addResultEntry(t4_cs);
+        t4.addResultEntry(t4_phy);
+        t4.addResultEntry(t4_math);
+        Student s4 = new ScienceStudent("Ahsan Farooq", "Science", t4, "G2");
+
+        Transcript t5 = new Transcript();
+        ResultEntry t5_cs = new ResultEntry(cs, 80);
+        ResultEntry t5_phy = new ResultEntry(phy, 76);
+        ResultEntry t5_math = new ResultEntry(math, 79);
+        t5.addResultEntry(t5_cs);
+        t5.addResultEntry(t5_phy);
+        t5.addResultEntry(t5_math);
+        Student s5 = new ArtsStudent("Bilal Tariq", "Arts", t5, "Music");
+
+        students.add(s1);
+        students.add(s2);
+        students.add(s3);
+        students.add(s4);
+        students.add(s5);
+
+        studentStore.updateFile("students.dat", students);
+        courseStore.updateFile("courses.dat", courses);
     }
 
 }
