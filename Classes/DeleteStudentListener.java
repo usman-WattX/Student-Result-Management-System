@@ -1,16 +1,17 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.awt.event.*;
 
 public class DeleteStudentListener implements ActionListener {
     private JTable studentTable;
     private DefaultTableModel studentModel;
-    private ArrayList<Student> students;
-    private DataStore<Student> studentStore;
+    private RecordList<Student> students;
+    private DataStore<RecordList<Student>> studentStore;
 
-    public DeleteStudentListener(JTable studentTable, DefaultTableModel studentModel, ArrayList<Student> students, DataStore<Student> studentStore) {
+    public DeleteStudentListener(JTable studentTable, DefaultTableModel studentModel,
+                                 RecordList<Student> students, DataStore<RecordList<Student>> studentStore) {
         this.studentTable = studentTable;
         this.studentModel = studentModel;
         this.students = students;
@@ -25,12 +26,15 @@ public class DeleteStudentListener implements ActionListener {
             return;
         }
 
-        if (row >= 0 && row < students.size()) {
-            students.remove(row);
+        if (row >= 0 && row < students.getItems().size()) {
+            Student s = students.getItems().get(row);
+            students.removeItem(s.getStudentId());
             studentModel.removeRow(row);
 
             try {
-                studentStore.updateFile("students.dat", students);
+                ArrayList<RecordList<Student>> temp = new ArrayList<>();
+                temp.add(students);
+                studentStore.saveToFile("students.dat", temp);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Error saving file: " + ex.getMessage());

@@ -1,7 +1,3 @@
-// RecordList<T> (Generic Class)
-//  A􀆩ributes: List<T> items
-//  Methods: add(T item), remove(String id), getAll()
-//  Usage: stores Students, Courses, or Transcripts
 import java.util.*;
 import java.io.*;
 

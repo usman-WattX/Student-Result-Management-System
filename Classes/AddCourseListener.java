@@ -7,13 +7,13 @@ import java.util.ArrayList;
 public class AddCourseListener implements ActionListener {
     private JFrame parentFrame;
     private DefaultTableModel courseModel;
-    private ArrayList<Course> courses;
-    private DataStore<Course> courseStore;
+    private RecordList<Course> courses;
+    private DataStore<RecordList<Course>> courseStore;
 
     public AddCourseListener(JFrame parentFrame,
                              DefaultTableModel courseModel,
-                             ArrayList<Course> courses,
-                             DataStore<Course> courseStore) {
+                             RecordList<Course> courses,
+                             DataStore<RecordList<Course>> courseStore) {
 
         this.parentFrame = parentFrame;
         this.courseModel = courseModel;
@@ -54,15 +54,12 @@ public class AddCourseListener implements ActionListener {
             String instrName = instrNameField.getText().trim();
             String instrQual = instrQualField.getText().trim();
 
-            // Validate empty fields
             if (code.isEmpty() || title.isEmpty() ||
                 creditText.isEmpty() || instrName.isEmpty() || instrQual.isEmpty()) {
-
                 JOptionPane.showMessageDialog(parentFrame, "All fields must be filled!");
                 return;
             }
 
-            // Validate credit hours
             int credits;
             try {
                 credits = Integer.parseInt(creditText);
@@ -75,14 +72,11 @@ public class AddCourseListener implements ActionListener {
                 return;
             }
 
-            // Create objects
             CourseInstructor instructor = new CourseInstructor(instrName, instrQual);
             Course newCourse = new Course(code, title, credits, instructor);
 
-            // Add to list
-            courses.add(newCourse);
+            courses.addItem(newCourse);
 
-            // Add to table
             courseModel.addRow(new Object[]{
                     newCourse.getCourseCode(),
                     newCourse.getTitle(),
@@ -90,8 +84,13 @@ public class AddCourseListener implements ActionListener {
                     newCourse.getCrsInst().getName()
             });
 
-            // Save to file
-            courseStore.updateFile("courses.dat", courses);
+            try {
+                ArrayList<RecordList<Course>> temp = new ArrayList<>();
+                temp.add(courses);
+                courseStore.saveToFile("courses.dat", temp);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(parentFrame, "Error saving course file!");
+            }
 
             JOptionPane.showMessageDialog(parentFrame, "Course Added Successfully!");
         }

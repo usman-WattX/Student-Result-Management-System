@@ -7,12 +7,12 @@ import java.util.ArrayList;
 public class AddStudentListener implements ActionListener {
     private JFrame parentFrame;
     private DefaultTableModel studentModel;
-    private ArrayList<Student> students;
-    private DataStore<Student> studentStore;
-    private ArrayList<Course> courses;
+    private RecordList<Student> students;
+    private DataStore<RecordList<Student>> studentStore;
+    private RecordList<Course> courses;
 
-    public AddStudentListener(JFrame frame, DefaultTableModel model, ArrayList<Student> students,
-                              DataStore<Student> store, ArrayList<Course> courses) {
+    public AddStudentListener(JFrame frame, DefaultTableModel model, RecordList<Student> students,
+                              DataStore<RecordList<Student>> store, RecordList<Course> courses) {
         this.parentFrame = frame;
         this.studentModel = model;
         this.students = students;
@@ -22,7 +22,7 @@ public class AddStudentListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // --- Create all components first ---
+        // --- Labels and fields ---
         JLabel nameLabel = new JLabel("Name:");
         JLabel programLabel = new JLabel("Program:");
         JLabel specificLabel = new JLabel();
@@ -32,6 +32,7 @@ public class AddStudentListener implements ActionListener {
         JComboBox<String> programBox = new JComboBox<>(programs);
         JButton addResultBtn = new JButton("Add Result Entry");
 
+        // --- Result table ---
         String[] resultCols = { "Course Code", "Course Title", "Marks" };
         DefaultTableModel resultModel = new DefaultTableModel(resultCols, 0);
         JTable resultTable = new JTable(resultModel);
@@ -39,7 +40,7 @@ public class AddStudentListener implements ActionListener {
 
         ArrayList<ResultEntry> tempResults = new ArrayList<>();
 
-        // --- Panel ---
+        // --- Panel setup ---
         JPanel panel = new JPanel(new GridLayout(0, 1));
         panel.add(nameLabel);
         panel.add(nameField);
@@ -51,18 +52,15 @@ public class AddStudentListener implements ActionListener {
         panel.add(resultScroll);
 
         // --- Program selection listener ---
-        programBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ev) {
-                String program = (String) programBox.getSelectedItem();
-                if (program.equalsIgnoreCase("Science"))
-                    specificLabel.setText("Lab Group:");
-                else if (program.equalsIgnoreCase("Arts"))
-                    specificLabel.setText("Major Art Form:");
-                else
-                    specificLabel.setText("Internship Company:");
-                specificField.setText("");
-            }
+        programBox.addActionListener(ev -> {
+            String program = (String) programBox.getSelectedItem();
+            if (program.equalsIgnoreCase("Science"))
+                specificLabel.setText("Lab Group:");
+            else if (program.equalsIgnoreCase("Arts"))
+                specificLabel.setText("Major Art Form:");
+            else
+                specificLabel.setText("Internship Company:");
+            specificField.setText("");
         });
         programBox.setSelectedIndex(0);
 
@@ -75,89 +73,86 @@ public class AddStudentListener implements ActionListener {
         JButton saveBtn = new JButton("Save Student");
         dialog.add(saveBtn, BorderLayout.SOUTH);
 
-        // --- Add Result Button ---
-        addResultBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ev) {
-                if (courses.isEmpty()) {
-                    JOptionPane.showMessageDialog(parentFrame, "No courses!");
-                    return;
-                }
+        // --- Add Result Entry button ---
+        addResultBtn.addActionListener(ev -> {
+            if (courses.getItems().isEmpty()) {
+                JOptionPane.showMessageDialog(parentFrame, "No courses available!");
+                return;
+            }
 
-                ArrayList<Course> available = new ArrayList<>();
-                for (Course c : courses) {
-                    boolean alreadyAdded = false;
-                    for (ResultEntry r : tempResults) {
-                        if (r.getCourse().getCourseCode().equals(c.getCourseCode())) {
-                            alreadyAdded = true;
-                            break;
-                        }
-                    }
-                    if (!alreadyAdded) {
-                        available.add(c);
+
+            ArrayList<Course> available = new ArrayList<>();
+            for (Course c : courses.getItems()) {  // use getItems()(exist inside RecordList) to get the ArrayList
+                boolean alreadyAdded = false;
+                for (ResultEntry r : tempResults) {
+                    if (r.getCourse().getCourseCode().equals(c.getCourseCode())) {
+                        alreadyAdded = true;
+                        break;
                     }
                 }
+                if (!alreadyAdded) available.add(c);
+            }
 
-                if (available.isEmpty()) {
-                    JOptionPane.showMessageDialog(parentFrame, "All courses added!");
-                    return;
-                }
 
-                // Prepare options for selection
-                String[] options = new String[available.size()];
-                for (int i = 0; i < available.size(); i++) {
-                    options[i] = available.get(i).getCourseCode() + " - " + available.get(i).getTitle();
-                }
+            if (available.isEmpty()) {
+                JOptionPane.showMessageDialog(parentFrame, "All courses already added!");
+                return;
+            }
 
-                JComboBox<String> combo = new JComboBox<>(options);
-                JTextField marks = new JTextField();
-                Object[] input = { "Select Course:", combo, "Marks:", marks };
+            String[] options = new String[available.size()];
+            for (int i = 0; i < available.size(); i++) {
+                options[i] = available.get(i).getCourseCode() + " - " + available.get(i).getTitle();
+            }
 
-                int result = JOptionPane.showConfirmDialog(parentFrame, input, "Add Result Entry",
-                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-                if (result == JOptionPane.OK_OPTION) {
-                    try {
-                        int idx = combo.getSelectedIndex();
-                        Course selected = available.get(idx);
-                        double m = Double.parseDouble(marks.getText().trim());
-                        tempResults.add(new ResultEntry(selected, m));
-                        resultModel.addRow(new Object[] { selected.getCourseCode(), selected.getTitle(), m });
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(dialog, "Invalid input!");
-                    }
+            JComboBox<String> combo = new JComboBox<>(options);
+            JTextField marks = new JTextField();
+            Object[] input = { "Select Course:", combo, "Marks:", marks };
+
+            int result = JOptionPane.showConfirmDialog(parentFrame, input, "Add Result Entry",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                try {
+                    int idx = combo.getSelectedIndex();
+                    Course selected = available.get(idx);
+                    double m = Double.parseDouble(marks.getText().trim());
+                    tempResults.add(new ResultEntry(selected, m));
+                    resultModel.addRow(new Object[] { selected.getCourseCode(), selected.getTitle(), m });
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(dialog, "Invalid input!");
                 }
             }
         });
 
-        // --- Save Student Button ---
-        saveBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ev) {
-                if (nameField.getText().trim().isEmpty() || specificField.getText().trim().isEmpty()
-                        || tempResults.isEmpty()) {
-                    JOptionPane.showMessageDialog(dialog, "Fill all fields & add at least one result!");
-                    return;
-                }
-
-                String program = (String) programBox.getSelectedItem();
-                Transcript t = new Transcript();
-                t.setResults(tempResults);
-
-                Student s;
-                if (program.equalsIgnoreCase("Science"))
-                    s = new ScienceStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
-                else if (program.equalsIgnoreCase("Arts"))
-                    s = new ArtsStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
-                else
-                    s = new EngineeringStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
-
-                students.add(s);
-                studentModel.addRow(new Object[] { s.getStudentId(), s.getName(), s.getProgram(),
-                        String.format("%.2f", s.calculateGPA()), s.calculateGrade() });
-
-                studentStore.appendToFile("students.dat", s);
-                dialog.dispose();
+        // --- Save Student button ---
+        saveBtn.addActionListener(ev -> {
+            if (nameField.getText().trim().isEmpty() || specificField.getText().trim().isEmpty()
+                    || tempResults.isEmpty()) {
+                JOptionPane.showMessageDialog(dialog, "Fill all fields & add at least one result!");
+                return;
             }
+
+            String program = (String) programBox.getSelectedItem();
+            Transcript t = new Transcript();
+            t.setResults(tempResults);
+
+            Student s;
+            if (program.equalsIgnoreCase("Science"))
+                s = new ScienceStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
+            else if (program.equalsIgnoreCase("Arts"))
+                s = new ArtsStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
+            else
+                s = new EngineeringStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
+
+            students.addItem(s);
+            studentModel.addRow(new Object[] { s.getStudentId(), s.getName(), s.getProgram(),
+                    String.format("%.2f", s.calculateGPA()), s.calculateGrade() });
+
+            // --- Wrap RecordList in ArrayList and save ---
+            ArrayList<RecordList<Student>> wrapper = new ArrayList<>();
+            wrapper.add(students);
+            studentStore.saveToFile("students.dat", wrapper);
+
+            dialog.dispose();
         });
 
         dialog.setVisible(true);

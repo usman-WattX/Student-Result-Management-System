@@ -7,11 +7,11 @@ import java.util.ArrayList;
 public class DeleteCourseListener implements ActionListener {
     private JTable courseTable;
     private DefaultTableModel courseModel;
-    private ArrayList<Course> courses;
-    private DataStore<Course> courseStore;
+    private RecordList<Course> courses;
+    private DataStore<RecordList<Course>> courseStore;
 
     public DeleteCourseListener(JTable courseTable, DefaultTableModel courseModel,
-                                ArrayList<Course> courses, DataStore<Course> courseStore) {
+                                RecordList<Course> courses, DataStore<RecordList<Course>> courseStore) {
         this.courseTable = courseTable;
         this.courseModel = courseModel;
         this.courses = courses;
@@ -27,12 +27,15 @@ public class DeleteCourseListener implements ActionListener {
             return;
         }
 
-        if (row >= 0 && row < courses.size()) {
-            courses.remove(row);
+        if (row >= 0 && row < courses.getItems().size()) {
+            Course c = courses.getItems().get(row);
+            courses.removeItem(c.getCourseCode());
             courseModel.removeRow(row);
 
             try {
-                courseStore.updateFile("courses.dat", courses);
+                ArrayList<RecordList<Course>> temp = new ArrayList<>();
+                temp.add(courses);
+                courseStore.saveToFile("courses.dat", temp);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Error saving file: " + ex.getMessage());

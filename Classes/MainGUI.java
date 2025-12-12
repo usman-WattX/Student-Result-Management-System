@@ -2,30 +2,46 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
-import java.awt.event.*;
 
 public class MainGUI {
-
     public static void main(String[] args) {
 
-        DataStore<Student> studentStore = new DataStore<>();
-        DataStore<Course> courseStore = new DataStore<>();
+        // ---------------- Data Stores ----------------
+        DataStore<RecordList<Student>> studentStore = new DataStore<>();
+        DataStore<RecordList<Course>> courseStore = new DataStore<>();
 
-        ArrayList<Student> students = studentStore.loadFromFile("students.dat");
-        ArrayList<Course> courses = courseStore.loadFromFile("courses.dat");
-        if (students.isEmpty()) {
+        ArrayList<RecordList<Student>> loadedStudents = studentStore.loadFromFile("students.dat");
+        ArrayList<RecordList<Course>> loadedCourses = courseStore.loadFromFile("courses.dat");
+
+        RecordList<Student> students;
+        RecordList<Course> courses;
+
+        if (loadedStudents.isEmpty())
+            students = new RecordList<>();
+        else
+            students = loadedStudents.get(0);
+
+        if (loadedCourses.isEmpty())
+            courses = new RecordList<>();
+        else
+            courses = loadedCourses.get(0);
+
+        // Preload data if empty
+        if (students.getItems().isEmpty()) {
             preloadData(students, courses, studentStore, courseStore);
         }
 
+        // ---------------- GUI ----------------
         JFrame frame = new JFrame("Student Result Management System");
         frame.setSize(1000, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // STUDENT TAB
+
+        // ---------------- STUDENTS TAB ----------------
         String[] studentCols = { "ID", "Name", "Program", "GPA", "Grade" };
         DefaultTableModel studentModel = new DefaultTableModel(studentCols, 0);
         JTable studentTable = new JTable(studentModel);
 
-        for (Student s : students) {
+        for (Student s : students.getItems()) {
             studentModel.addRow(new Object[] {
                     s.getStudentId(),
                     s.getName(),
@@ -45,15 +61,13 @@ public class MainGUI {
         sBtns.add(addStudentBtn);
         sBtns.add(delStudentBtn);
         studentPanel.add(sBtns, BorderLayout.SOUTH);
-        JTabbedPane tabs = new JTabbedPane();
-        tabs.addTab("Students", studentPanel);
 
-        // COURSES TAB
+        // ---------------- COURSES TAB ----------------
         String[] courseCols = { "Code", "Title", "Credits", "Instructor" };
         DefaultTableModel courseModel = new DefaultTableModel(courseCols, 0);
         JTable courseTable = new JTable(courseModel);
 
-        for (Course c : courses) {
+        for (Course c : courses.getItems()) {
             courseModel.addRow(new Object[] {
                     c.getCourseCode(),
                     c.getTitle(),
@@ -71,97 +85,87 @@ public class MainGUI {
         cBtns.add(addCourseBtn);
         cBtns.add(delCourseBtn);
         coursePanel.add(cBtns, BorderLayout.SOUTH);
-        tabs.addTab("Courses", coursePanel);
 
+        // ---------------- TABS ----------------
+        JTabbedPane tabs = new JTabbedPane();
+        tabs.addTab("Students", studentPanel);
+        tabs.addTab("Courses", coursePanel);
         frame.add(tabs);
         frame.setVisible(true);
 
-        // =====Add Student=====
-        AddStudentListener addListener = new AddStudentListener(
-                frame, studentModel, students, studentStore, courses);
+        // ---------------- Student ----------------
+        AddStudentListener addListener = new AddStudentListener(frame, studentModel, students, studentStore, courses);
         addStudentBtn.addActionListener(addListener);
 
-        // =====DELETING STUDENT=====
-        DeleteStudentListener deleteListener = new DeleteStudentListener(studentTable, studentModel, students,
-                studentStore);
+        // ---------------- Courde ----------------
+        DeleteStudentListener deleteListener = new DeleteStudentListener(studentTable, studentModel, students, studentStore);
         delStudentBtn.addActionListener(deleteListener);
 
-        // ---------------- Delete Course ----------------
-        DeleteCourseListener deleteCourseListener =
-        new DeleteCourseListener(courseTable, courseModel, courses, courseStore);
-        delCourseBtn.addActionListener(deleteCourseListener);
-
-        // ---------------- Add Course ----------------
-        AddCourseListener addCourseListener = 
-        new AddCourseListener(frame, courseModel, courses, courseStore);
+        AddCourseListener addCourseListener = new AddCourseListener(frame, courseModel, courses, courseStore);
         addCourseBtn.addActionListener(addCourseListener);
+
+        DeleteCourseListener deleteCourseListener = new DeleteCourseListener(courseTable, courseModel, courses, courseStore);
+        delCourseBtn.addActionListener(deleteCourseListener);
     }
 
-    public static void preloadData(ArrayList<Student> students, ArrayList<Course> courses,
-            DataStore<Student> studentStore, DataStore<Course> courseStore) {
+    public static void preloadData(RecordList<Student> students, RecordList<Course> courses,
+                                   DataStore<RecordList<Student>> studentStore,
+                                   DataStore<RecordList<Course>> courseStore) {
+
         CourseInstructor csInstructor = new CourseInstructor("Dr. Ahmed", "PhD");
         CourseInstructor phyInstructor = new CourseInstructor("Prof. Khan", "MSc");
         CourseInstructor mathInstructor = new CourseInstructor("Dr. Sara", "PhD");
+
         Course cs = new Course("CS101", "Java Programming", 4, csInstructor);
         Course phy = new Course("PHY101", "Physics", 3, phyInstructor);
         Course math = new Course("MATH101", "Calculus", 4, mathInstructor);
-        courses.add(cs);
-        courses.add(phy);
-        courses.add(math);
+
+        courses.addItem(cs);
+        courses.addItem(phy);
+        courses.addItem(math);
 
         Transcript t1 = new Transcript();
-        ResultEntry t1_cs = new ResultEntry(cs, 85);
-        ResultEntry t1_phy = new ResultEntry(phy, 75);
-        ResultEntry t1_math = new ResultEntry(math, 90);
-        t1.addResultEntry(t1_cs);
-        t1.addResultEntry(t1_phy);
-        t1.addResultEntry(t1_math);
+        t1.addResultEntry(new ResultEntry(cs, 85));
+        t1.addResultEntry(new ResultEntry(phy, 75));
+        t1.addResultEntry(new ResultEntry(math, 90));
         Student s1 = new ScienceStudent("Ali Raza", "Science", t1, "G1");
 
         Transcript t2 = new Transcript();
-        ResultEntry t2_cs = new ResultEntry(cs, 78);
-        ResultEntry t2_phy = new ResultEntry(phy, 82);
-        ResultEntry t2_math = new ResultEntry(math, 70);
-        t2.addResultEntry(t2_cs);
-        t2.addResultEntry(t2_phy);
-        t2.addResultEntry(t2_math);
+        t2.addResultEntry(new ResultEntry(cs, 78));
+        t2.addResultEntry(new ResultEntry(phy, 82));
+        t2.addResultEntry(new ResultEntry(math, 70));
         Student s2 = new ArtsStudent("Hassan Ahmed", "Arts", t2, "Painting");
 
         Transcript t3 = new Transcript();
-        ResultEntry t3_cs = new ResultEntry(cs, 65);
-        ResultEntry t3_phy = new ResultEntry(phy, 72);
-        ResultEntry t3_math = new ResultEntry(math, 68);
-        t3.addResultEntry(t3_cs);
-        t3.addResultEntry(t3_phy);
-        t3.addResultEntry(t3_math);
+        t3.addResultEntry(new ResultEntry(cs, 65));
+        t3.addResultEntry(new ResultEntry(phy, 72));
+        t3.addResultEntry(new ResultEntry(math, 68));
         Student s3 = new EngineeringStudent("Usman Khalid", "Engineering", t3, "TechCorp");
 
         Transcript t4 = new Transcript();
-        ResultEntry t4_cs = new ResultEntry(cs, 88);
-        ResultEntry t4_phy = new ResultEntry(phy, 91);
-        ResultEntry t4_math = new ResultEntry(math, 85);
-        t4.addResultEntry(t4_cs);
-        t4.addResultEntry(t4_phy);
-        t4.addResultEntry(t4_math);
+        t4.addResultEntry(new ResultEntry(cs, 88));
+        t4.addResultEntry(new ResultEntry(phy, 91));
+        t4.addResultEntry(new ResultEntry(math, 85));
         Student s4 = new ScienceStudent("Ahsan Farooq", "Science", t4, "G2");
 
         Transcript t5 = new Transcript();
-        ResultEntry t5_cs = new ResultEntry(cs, 80);
-        ResultEntry t5_phy = new ResultEntry(phy, 76);
-        ResultEntry t5_math = new ResultEntry(math, 79);
-        t5.addResultEntry(t5_cs);
-        t5.addResultEntry(t5_phy);
-        t5.addResultEntry(t5_math);
+        t5.addResultEntry(new ResultEntry(cs, 80));
+        t5.addResultEntry(new ResultEntry(phy, 76));
+        t5.addResultEntry(new ResultEntry(math, 79));
         Student s5 = new ArtsStudent("Bilal Tariq", "Arts", t5, "Music");
 
-        students.add(s1);
-        students.add(s2);
-        students.add(s3);
-        students.add(s4);
-        students.add(s5);
+        students.addItem(s1);
+        students.addItem(s2);
+        students.addItem(s3);
+        students.addItem(s4);
+        students.addItem(s5);
 
-        studentStore.updateFile("students.dat", students);
-        courseStore.updateFile("courses.dat", courses);
+        ArrayList<RecordList<Student>> tempS = new ArrayList<>();
+        tempS.add(students);
+        studentStore.saveToFile("students.dat", tempS);
+
+        ArrayList<RecordList<Course>> tempC = new ArrayList<>();
+        tempC.add(courses);
+        courseStore.saveToFile("courses.dat", tempC);
     }
-
 }

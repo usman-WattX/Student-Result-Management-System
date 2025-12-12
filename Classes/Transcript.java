@@ -25,17 +25,17 @@ public class Transcript implements Serializable{
     }
 
     public void addResultEntry(ResultEntry r) {
-        if (r == null) {
+                if (r == null) {
             throw new IllegalArgumentException("ResultEntry cannot be null");
-        }
-        if (r.getCourse() == null) {
+        } else if (r.getCourse() == null) {
             throw new IllegalArgumentException("Course in ResultEntry cannot be null");
-        }
-        if (r.getMarksObtained() < 0 || r.getMarksObtained() > 100) {
+        } else if (r.getMarksObtained() < 0 || r.getMarksObtained() > 100) {
             throw new IllegalArgumentException("Marks must be between 0 and 100");
+        } else {
+            results.add(r);
         }
-        results.add(r);
     }
+
 
     public double getTotalMarks() {
         double total = 0.0;

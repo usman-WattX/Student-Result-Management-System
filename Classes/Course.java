@@ -1,8 +1,3 @@
-// Course
-//  A􀆩ributes: courseCode, 􀆟tle, creditHours
-//  Composi􀆟on: has-a CourseInstructor
-//  Sta􀆟c: sta􀆟c int totalCourses
-//  Methods: displayCourseDetails()
 import java.io.*;
 
 public class Course implements Serializable{
@@ -72,10 +67,6 @@ public class Course implements Serializable{
         }else{
             this.crsInst = crsInst;
         }
-    }
-
-    public int getTotalCourses(){
-        return totalCourses;
     }
 
     public String toString() {
