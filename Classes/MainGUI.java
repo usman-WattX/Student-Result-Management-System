@@ -58,6 +58,10 @@ public class MainGUI {
         JPanel sBtns = new JPanel();
         JButton addStudentBtn = new JButton("Add Student");
         JButton delStudentBtn = new JButton("Delete Student");
+        JButton viewTranscriptBtn = new JButton("View Transcript");
+        sBtns.add(viewTranscriptBtn); // Add next to Add/Delete buttons
+        ViewTranscriptListener viewListener = new ViewTranscriptListener(studentTable, students);
+        viewTranscriptBtn.addActionListener(viewListener);
         sBtns.add(addStudentBtn);
         sBtns.add(delStudentBtn);
         studentPanel.add(sBtns, BorderLayout.SOUTH);
