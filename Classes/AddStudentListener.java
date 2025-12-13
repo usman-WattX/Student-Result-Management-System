@@ -12,7 +12,7 @@ public class AddStudentListener implements ActionListener {
     private RecordList<Course> courses;
 
     public AddStudentListener(JFrame frame, DefaultTableModel model, RecordList<Student> students,
-                              DataStore<RecordList<Student>> store, RecordList<Course> courses) {
+        DataStore<RecordList<Student>> store, RecordList<Course> courses) {
         this.parentFrame = frame;
         this.studentModel = model;
         this.students = students;
@@ -31,6 +31,8 @@ public class AddStudentListener implements ActionListener {
         String[] programs = { "Science", "Arts", "Engineering" };
         JComboBox<String> programBox = new JComboBox<>(programs);
         JButton addResultBtn = new JButton("Add Result Entry");
+        JCheckBox feePaidBox = new JCheckBox("Fee Paid");
+
 
         // --- Result table ---
         String[] resultCols = { "Course Code", "Course Title", "Marks" };
@@ -44,6 +46,7 @@ public class AddStudentListener implements ActionListener {
         JPanel panel = new JPanel(new GridLayout(0, 1));
         panel.add(nameLabel);
         panel.add(nameField);
+        panel.add(feePaidBox);
         panel.add(programLabel);
         panel.add(programBox);
         panel.add(specificLabel);
@@ -82,7 +85,7 @@ public class AddStudentListener implements ActionListener {
 
 
             ArrayList<Course> available = new ArrayList<>();
-            for (Course c : courses.getItems()) {  // use getItems()(exist inside RecordList) to get the ArrayList
+            for (Course c : courses.getItems()) {  
                 boolean alreadyAdded = false;
                 for (ResultEntry r : tempResults) {
                     if (r.getCourse().getCourseCode().equals(c.getCourseCode())) {
@@ -132,20 +135,26 @@ public class AddStudentListener implements ActionListener {
             }
 
             String program = (String) programBox.getSelectedItem();
+            boolean feePaid = feePaidBox.isSelected();
             Transcript t = new Transcript();
             t.setResults(tempResults);
 
             Student s;
             if (program.equalsIgnoreCase("Science"))
-                s = new ScienceStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
+                s = new ScienceStudent(nameField.getText().trim(), program, t, feePaid, specificField.getText().trim());
             else if (program.equalsIgnoreCase("Arts"))
-                s = new ArtsStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
+                s = new ArtsStudent(nameField.getText().trim(), program, t, feePaid, specificField.getText().trim());
             else
-                s = new EngineeringStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
+                s = new EngineeringStudent(nameField.getText().trim(), program, t, feePaid, specificField.getText().trim());
 
             students.addItem(s);
-            studentModel.addRow(new Object[] { s.getStudentId(), s.getName(), s.getProgram(),
-                    String.format("%.2f", s.calculateGPA()), s.calculateGrade() });
+            if (feePaid) {
+                studentModel.addRow(new Object[] { s.getStudentId(), s.getName(), s.getProgram(),
+                    String.format("%.2f", s.calculateGPA()), s.calculateGrade() });    
+            }else{
+                studentModel.addRow(new Object[] { s.getStudentId(), s.getName(), s.getProgram(), "Fee Pending", "---" });
+            }
+            
 
             // --- Wrap RecordList in ArrayList and save ---
             ArrayList<RecordList<Student>> wrapper = new ArrayList<>();

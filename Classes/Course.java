@@ -68,6 +68,20 @@ public class Course implements Serializable{
             this.crsInst = crsInst;
         }
     }
+    
+    public static int getTotalCourses(){
+        return totalCourses;
+    }
+
+    public static void decrementCourseCounter() {
+        if (totalCourses > 0) {
+            totalCourses--;
+        }
+    }
+
+    public static void initilaCourseCount(int ttlCrs){
+        totalCourses = ttlCrs;
+    }
 
     public String toString() {
         return ("COURSE DETAILS: \nCourse Code: " + courseCode + 

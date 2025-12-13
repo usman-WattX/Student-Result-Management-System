@@ -16,15 +16,17 @@ public class MainGUI {
         RecordList<Student> students;
         RecordList<Course> courses;
 
-        if (loadedStudents.isEmpty())
+        if (loadedStudents.isEmpty()){
             students = new RecordList<>();
-        else
+        }else{
             students = loadedStudents.get(0);
-
-        if (loadedCourses.isEmpty())
+        }
+        if (loadedCourses.isEmpty()){
             courses = new RecordList<>();
-        else
+        }else{
             courses = loadedCourses.get(0);
+            Course.initilaCourseCount(courses.getItems().size());
+        }
 
         // Preload data if empty
         if (students.getItems().isEmpty()) {
@@ -42,32 +44,41 @@ public class MainGUI {
         JTable studentTable = new JTable(studentModel);
 
         for (Student s : students.getItems()) {
-            studentModel.addRow(new Object[] {
+            if (s.isFeePaid()) {
+                studentModel.addRow(new Object[] {
                     s.getStudentId(),
                     s.getName(),
                     s.getProgram(),
                     String.format("%.2f", s.calculateGPA()),
                     s.calculateGrade()
             });
+            }else{
+                studentModel.addRow(new Object[] {
+                    s.getStudentId(),
+                    s.getName(),
+                    s.getProgram(),
+                    "Fee Pending",
+                    "---"
+            });
+            } 
         }
 
-        BorderLayout b = new BorderLayout();
-        JPanel studentPanel = new JPanel(b);
+        JPanel studentPanel = new JPanel(new BorderLayout());
         JScrollPane p = new JScrollPane(studentTable);
         studentPanel.add(p, BorderLayout.CENTER);
         JPanel sBtns = new JPanel();
+        JButton viewTranscriptBtn = new JButton("View Transcript");
         JButton addStudentBtn = new JButton("Add Student");
         JButton delStudentBtn = new JButton("Delete Student");
-        JButton viewTranscriptBtn = new JButton("View Transcript");
-        sBtns.add(viewTranscriptBtn); // Add next to Add/Delete buttons
-        ViewTranscriptListener viewListener = new ViewTranscriptListener(studentTable, students);
-        viewTranscriptBtn.addActionListener(viewListener);
+        JButton payFeeBtn = new JButton("Pay Fee");
+        sBtns.add(viewTranscriptBtn);
         sBtns.add(addStudentBtn);
         sBtns.add(delStudentBtn);
+        sBtns.add(payFeeBtn);
         studentPanel.add(sBtns, BorderLayout.SOUTH);
 
         // ---------------- COURSES TAB ----------------
-        String[] courseCols = { "Code", "Title", "Credits", "Instructor" };
+        String[] courseCols = {"Code", "Title", "Credits", "Instructor" };
         DefaultTableModel courseModel = new DefaultTableModel(courseCols, 0);
         JTable courseTable = new JTable(courseModel);
 
@@ -85,9 +96,11 @@ public class MainGUI {
         coursePanel.add(courseScroll, BorderLayout.CENTER);
         JButton addCourseBtn = new JButton("Add Course");
         JButton delCourseBtn = new JButton("Delete Course");
+        JLabel totalCrsLbl = new JLabel("Total Courses: " + Course.getTotalCourses());
         JPanel cBtns = new JPanel();
         cBtns.add(addCourseBtn);
         cBtns.add(delCourseBtn);
+        cBtns.add(totalCrsLbl);
         coursePanel.add(cBtns, BorderLayout.SOUTH);
 
         // ---------------- TABS ----------------
@@ -97,24 +110,29 @@ public class MainGUI {
         frame.add(tabs);
         frame.setVisible(true);
 
-        // ---------------- Student ----------------
+        // ---------------- StudentBtnListeners ----------------
+        ViewTranscriptListener viewListener = new ViewTranscriptListener(studentTable, students);
+        viewTranscriptBtn.addActionListener(viewListener);
+
         AddStudentListener addListener = new AddStudentListener(frame, studentModel, students, studentStore, courses);
         addStudentBtn.addActionListener(addListener);
 
-        // ---------------- Courde ----------------
         DeleteStudentListener deleteListener = new DeleteStudentListener(studentTable, studentModel, students, studentStore);
         delStudentBtn.addActionListener(deleteListener);
 
-        AddCourseListener addCourseListener = new AddCourseListener(frame, courseModel, courses, courseStore);
+        PayFeeListener payFeeListener = new PayFeeListener(studentTable, studentModel, students, studentStore);
+        payFeeBtn.addActionListener(payFeeListener);
+
+        // ---------------- CourseBtnListeners ----------------
+        AddCourseListener addCourseListener = new AddCourseListener(frame, courseModel, courses, courseStore, totalCrsLbl);
         addCourseBtn.addActionListener(addCourseListener);
 
-        DeleteCourseListener deleteCourseListener = new DeleteCourseListener(courseTable, courseModel, courses, courseStore);
+        DeleteCourseListener deleteCourseListener = new DeleteCourseListener(courseTable, courseModel, courses, courseStore, totalCrsLbl);
         delCourseBtn.addActionListener(deleteCourseListener);
     }
 
     public static void preloadData(RecordList<Student> students, RecordList<Course> courses,
-                                   DataStore<RecordList<Student>> studentStore,
-                                   DataStore<RecordList<Course>> courseStore) {
+        DataStore<RecordList<Student>> studentStore, DataStore<RecordList<Course>> courseStore) {
 
         CourseInstructor csInstructor = new CourseInstructor("Dr. Ahmed", "PhD");
         CourseInstructor phyInstructor = new CourseInstructor("Prof. Khan", "MSc");
@@ -132,31 +150,31 @@ public class MainGUI {
         t1.addResultEntry(new ResultEntry(cs, 85));
         t1.addResultEntry(new ResultEntry(phy, 75));
         t1.addResultEntry(new ResultEntry(math, 90));
-        Student s1 = new ScienceStudent("Ali Raza", "Science", t1, "G1");
+        Student s1 = new ScienceStudent("Ali Raza", "Science", t1, true, "G1");
 
         Transcript t2 = new Transcript();
         t2.addResultEntry(new ResultEntry(cs, 78));
         t2.addResultEntry(new ResultEntry(phy, 82));
         t2.addResultEntry(new ResultEntry(math, 70));
-        Student s2 = new ArtsStudent("Hassan Ahmed", "Arts", t2, "Painting");
+        Student s2 = new ArtsStudent("Hassan Ahmed", "Arts", t2, true,"Painting");
 
         Transcript t3 = new Transcript();
         t3.addResultEntry(new ResultEntry(cs, 65));
         t3.addResultEntry(new ResultEntry(phy, 72));
         t3.addResultEntry(new ResultEntry(math, 68));
-        Student s3 = new EngineeringStudent("Usman Khalid", "Engineering", t3, "TechCorp");
+        Student s3 = new EngineeringStudent("Usman Khalid", "Engineering", t3, true,"TechCorp");
 
         Transcript t4 = new Transcript();
         t4.addResultEntry(new ResultEntry(cs, 88));
         t4.addResultEntry(new ResultEntry(phy, 91));
         t4.addResultEntry(new ResultEntry(math, 85));
-        Student s4 = new ScienceStudent("Ahsan Farooq", "Science", t4, "G2");
+        Student s4 = new ScienceStudent("Ahsan Farooq", "Science", t4, false,"G2");
 
         Transcript t5 = new Transcript();
         t5.addResultEntry(new ResultEntry(cs, 80));
         t5.addResultEntry(new ResultEntry(phy, 76));
         t5.addResultEntry(new ResultEntry(math, 79));
-        Student s5 = new ArtsStudent("Bilal Tariq", "Arts", t5, "Music");
+        Student s5 = new ArtsStudent("Bilal Tariq", "Arts", t5, true,"Music");
 
         students.addItem(s1);
         students.addItem(s2);

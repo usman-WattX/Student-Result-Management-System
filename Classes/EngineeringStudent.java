@@ -6,8 +6,8 @@ public class EngineeringStudent extends Student {
         setInternshipCompany("Unknown");
     }
 
-    public EngineeringStudent(String name, String program, Transcript t, String internshipCompany) {
-        super(name, program, t);
+    public EngineeringStudent(String name, String program, Transcript t, boolean feePaid, String internshipCompany) {
+        super(name, program, t, feePaid);
         setInternshipCompany(internshipCompany);
     }
 

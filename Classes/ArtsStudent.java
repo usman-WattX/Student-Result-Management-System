@@ -6,8 +6,8 @@ public class ArtsStudent extends Student {
         setMajorArtForm("Unknown");
     }
 
-    public ArtsStudent(String name, String program, Transcript t, String majorArtForm) {
-        super(name, program, t);
+    public ArtsStudent(String name, String program, Transcript t, boolean feePaid, String majorArtForm) {
+        super(name, program, t, feePaid);
         setMajorArtForm(majorArtForm);
     }
 

@@ -9,16 +9,15 @@ public class AddCourseListener implements ActionListener {
     private DefaultTableModel courseModel;
     private RecordList<Course> courses;
     private DataStore<RecordList<Course>> courseStore;
+    private JLabel totalCrsLbl;
 
-    public AddCourseListener(JFrame parentFrame,
-                             DefaultTableModel courseModel,
-                             RecordList<Course> courses,
-                             DataStore<RecordList<Course>> courseStore) {
-
+    public AddCourseListener(JFrame parentFrame, DefaultTableModel courseModel, RecordList<Course> courses, DataStore<RecordList<Course>> courseStore, JLabel totalCrsLbl) {
         this.parentFrame = parentFrame;
         this.courseModel = courseModel;
         this.courses = courses;
         this.courseStore = courseStore;
+        this.totalCrsLbl = totalCrsLbl;
+        this.totalCrsLbl.setText("Total Courses: " + Course.getTotalCourses());
     }
 
     @Override
@@ -83,6 +82,8 @@ public class AddCourseListener implements ActionListener {
                     newCourse.getCreditHours(),
                     newCourse.getCrsInst().getName()
             });
+
+            this.totalCrsLbl.setText("Total Courses: " + Course.getTotalCourses());
 
             try {
                 ArrayList<RecordList<Course>> temp = new ArrayList<>();

@@ -6,8 +6,8 @@ public class ScienceStudent extends Student {
         setLabGroup("Unknown");
     }
 
-    public ScienceStudent(String name, String program, Transcript t, String labGroup) {
-        super(name, program, t);
+    public ScienceStudent(String name, String program, Transcript t, boolean feePaid, String labGroup) {
+        super(name, program, t, feePaid);
         setLabGroup(labGroup);
     }
 
