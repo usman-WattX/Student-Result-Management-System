@@ -36,10 +36,12 @@ public class AddStudentListener implements ActionListener {
         ArrayList<ResultEntry> results = new ArrayList<>();
         JButton addResultBtn = new JButton("Add Result");
         JButton saveBtn = new JButton("Save Student");
+        JCheckBox feepaidBox = new JCheckBox("Fee Paid");
         JScrollPane scrollPane = new JScrollPane(resultTable);
         JPanel panel = new JPanel(new GridLayout(0, 1));
         panel.add(new JLabel("Name:"));
         panel.add(nameField);
+        panel.add(feepaidBox);
         panel.add(new JLabel("Program:"));
         panel.add(programBox);
         panel.add(specificLabel);
@@ -117,13 +119,14 @@ public class AddStudentListener implements ActionListener {
                 Transcript t = new Transcript();
                 t.setResults(results);
                 String program = (String) programBox.getSelectedItem();
+                boolean feeStatus = feepaidBox.isSelected();
                 Student s = null;
                 if (program.equals("Science")) {
-                    s = new ScienceStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
+                    s = new ScienceStudent(nameField.getText().trim(), program, t, feeStatus,specificField.getText().trim());
                 } else if (program.equals("Arts")) {
-                    s = new ArtsStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
+                    s = new ArtsStudent(nameField.getText().trim(), program, t, feeStatus,specificField.getText().trim());
                 } else {
-                    s = new EngineeringStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
+                    s = new EngineeringStudent(nameField.getText().trim(), program, t, feeStatus,specificField.getText().trim());
                 }
                 students.addItem(s);
                 studentModel.addRow(new Object[] { s.getStudentId(), s.getName(), s.getProgram(),

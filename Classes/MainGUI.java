@@ -15,7 +15,6 @@ public class MainGUI {
         RecordList<Student> students;
         RecordList<Course> courses;
 
-        // Fixed if-else braces
         if (loadedStudents.isEmpty()) {
             students = new RecordList<>();
         } else {
@@ -26,6 +25,7 @@ public class MainGUI {
             courses = new RecordList<>();
         } else {
             courses = loadedCourses.get(0);
+            Course.initilaCourseCount(courses.getItems().size());
         }
 
         if (students.getItems().isEmpty()) {
@@ -69,7 +69,7 @@ public class MainGUI {
         JButton viewTranscriptBtn = new JButton("View Transcript");
         JButton addStudentBtn = new JButton("Add Student");
         JButton delStudentBtn = new JButton("Delete Student");
-        JButton payFeeBtn = new JButton("Pay Fee"); // Added missing button
+        JButton payFeeBtn = new JButton("Pay Fee");
 
         sBtns.add(viewTranscriptBtn);
         sBtns.add(addStudentBtn);
@@ -135,8 +135,7 @@ public class MainGUI {
     }
 
     public static void preloadData(RecordList<Student> students, RecordList<Course> courses,
-                                   DataStore<RecordList<Student>> studentStore,
-                                   DataStore<RecordList<Course>> courseStore) {
+        DataStore<RecordList<Student>> studentStore, DataStore<RecordList<Course>> courseStore) {
 
         CourseInstructor csInstructor = new CourseInstructor("Dr. Ahmed", "PhD");
         CourseInstructor phyInstructor = new CourseInstructor("Prof. Khan", "MSc");

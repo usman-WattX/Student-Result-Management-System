@@ -88,18 +88,7 @@ public abstract class Student implements ResultCalculator, Serializable {
     }
     
     public double calculateGPA() {
-        if (t.getResults().isEmpty()) return 0.0;
-
-        double sumGPA = 0.0;
-        int count = 0;
-
-        for (ResultEntry r : t.getResults()) {
-            double courseGPA = (r.getMarksObtained() / 100.0) * 4;
-            sumGPA += courseGPA;
-            count++;
-        }
-
-        return count == 0 ? 0.0 : sumGPA / count; 
+        return t.getGPA(); 
     }
 
     public double calculateTotal() {
@@ -108,24 +97,40 @@ public abstract class Student implements ResultCalculator, Serializable {
 
     public double calculatePercentage() {
         int totalCrs = t.getResults().size();
-        if (totalCrs == 0) return 0.0;
+        if (totalCrs == 0){
+            return 0.0;
+        } 
         return (calculateTotal() / (totalCrs * 100)) * 100;
     }
 
     public String calculateGrade() {
-        double percent = calculatePercentage();
-        if (percent >= 85) return "A";
-        else if (percent >= 80) return "A-";
-        else if (percent >= 75) return "B+";
-        else if (percent >= 71) return "B";
-        else if (percent >= 68) return "B-";
-        else if (percent >= 64) return "C+";
-        else if (percent >= 61) return "C";
-        else if (percent >= 58) return "C-";
-        else if (percent >= 54) return "D+";
-        else if (percent >= passMarks) return "D";
-        else return "F";
+        double GPA = calculateGPA();
+
+        if (GPA >= 3.67) {
+            return "A";
+        } else if (GPA >= 3.34) {
+            return "A-";
+        } else if (GPA >= 3.01) {
+            return "B+";
+        } else if (GPA >= 2.67) {
+            return "B";
+        } else if (GPA >= 2.34) {
+            return "B-";
+        } else if (GPA >= 2.01) {
+            return "C+";
+        } else if (GPA >= 1.67) {
+            return "C";
+        } else if (GPA >= 1.31) {
+            return "C-";
+        } else if (GPA >= 1.01) {
+            return "D+";
+        } else if (GPA >= 0.10) {
+            return "D";
+        } else {
+            return "F";
+        }
     }
+
 
     @Override
     public String toString() {

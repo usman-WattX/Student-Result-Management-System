@@ -36,6 +36,62 @@ public class Transcript implements Serializable {
         }
     }
 
+    public double getCourseGPA(ResultEntry r) {
+        double marks = r.getMarksObtained();
+
+        if (marks >= 85) {
+            return 4.00;
+        } else if (marks >= 80) {
+            return 3.67;
+        } else if (marks >= 75) {
+            return 3.33;
+        } else if (marks >= 71) {
+            return 3.00;
+        } else if (marks >= 68) {
+            return 2.67;
+        } else if (marks >= 64) {
+            return 2.33;
+        } else if (marks >= 61) {
+            return 2.00;
+        } else if (marks >= 58) {
+            return 1.67;
+        } else if (marks >= 54) {
+            return 1.30;
+        } else if (marks >= 50) {
+            return 1.00;
+        } else {
+            return 0.00;
+        }
+    }
+
+    public String getCourseGrade(ResultEntry r) {
+        double GPA = getCourseGPA(r); 
+
+        if (GPA >= 3.67) {
+            return "A";
+        } else if (GPA >= 3.34) {
+            return "A-";
+        } else if (GPA >= 3.01) {
+            return "B+";
+        } else if (GPA >= 2.67) {
+            return "B";
+        } else if (GPA >= 2.34) {
+            return "B-";
+        } else if (GPA >= 2.01) {
+            return "C+";
+        } else if (GPA >= 1.67) {
+            return "C";
+        } else if (GPA >= 1.31) {
+            return "C-";
+        } else if (GPA >= 1.01) {
+            return "D+";
+        } else if (GPA >= 0.10) {
+            return "D";
+        } else {
+            return "F";
+        } 
+    }
+
     public double getTotalMarks() {
         double total = 0.0;
         for (ResultEntry r : results) {
@@ -45,21 +101,24 @@ public class Transcript implements Serializable {
     }
 
     public double getGPA() {
-        if (results.isEmpty()) return 0.0;
+        if (results.isEmpty()) {
+            return 0.0;
+        }
 
-        double totalGPA = 0.0;
+        double totalWeightedGPA = 0.0;
         int totalCredits = 0;
 
         for (ResultEntry r : results) {
             int creditHours = r.getCourse().getCreditHours();
-            double marks = r.getMarksObtained();
-
-            double courseGPA = (marks / 100.0) * 4; 
-            totalGPA += courseGPA * creditHours;     
+            totalWeightedGPA += getCourseGPA(r) * creditHours;
             totalCredits += creditHours;
         }
 
-        return totalCredits == 0 ? 0.0 : totalGPA / totalCredits;
+        if (totalCredits == 0) {
+            return 0.0;
+        } else {
+            return totalWeightedGPA / totalCredits;
+        }
     }
 
     @Override
