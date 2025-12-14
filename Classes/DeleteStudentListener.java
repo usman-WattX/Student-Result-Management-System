@@ -10,8 +10,8 @@ public class DeleteStudentListener implements ActionListener {
     private RecordList<Student> students;
     private DataStore<RecordList<Student>> studentStore;
 
-    public DeleteStudentListener(JTable studentTable, DefaultTableModel studentModel,
-                                 RecordList<Student> students, DataStore<RecordList<Student>> studentStore) {
+    public DeleteStudentListener(JTable studentTable, DefaultTableModel studentModel, RecordList<Student> 
+        students, DataStore<RecordList<Student>> studentStore) {
         this.studentTable = studentTable;
         this.studentModel = studentModel;
         this.students = students;

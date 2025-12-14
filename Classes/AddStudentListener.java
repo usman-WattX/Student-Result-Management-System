@@ -27,22 +27,16 @@ public class AddStudentListener implements ActionListener {
         programBox.addItem("Science");
         programBox.addItem("Arts");
         programBox.addItem("Engineering");
-
         JLabel specificLabel = new JLabel("Specific:");
         JTextField specificField = new JTextField();
-
         DefaultTableModel resultModel = new DefaultTableModel();
         resultModel.addColumn("Course");
         resultModel.addColumn("Marks");
-
         JTable resultTable = new JTable(resultModel);
         ArrayList<ResultEntry> results = new ArrayList<>();
-
         JButton addResultBtn = new JButton("Add Result");
         JButton saveBtn = new JButton("Save Student");
-
         JScrollPane scrollPane = new JScrollPane(resultTable);
-
         JPanel panel = new JPanel(new GridLayout(0, 1));
         panel.add(new JLabel("Name:"));
         panel.add(nameField);
@@ -53,7 +47,6 @@ public class AddStudentListener implements ActionListener {
         panel.add(addResultBtn);
         panel.add(scrollPane);
         panel.add(saveBtn);
-
         JDialog dialog = new JDialog(parentFrame, "Add Student", true);
         dialog.setSize(450, 400);
         dialog.setLocationRelativeTo(parentFrame);
@@ -61,26 +54,22 @@ public class AddStudentListener implements ActionListener {
         programBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String program = (String) programBox.getSelectedItem();
-                if (program.equals("Science")){
+                if (program.equals("Science")) {
                     specificLabel.setText("Lab Group:");
-                }
-                else if (program.equals("Arts")){
+                } else if (program.equals("Arts")) {
                     specificLabel.setText("Major Art:");
-                }
-                else{
+                } else {
                     specificLabel.setText("Internship:");
                 }
             }
         });
         programBox.setSelectedIndex(0);
-
         addResultBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (courses.getItems().isEmpty()) {
                     JOptionPane.showMessageDialog(parentFrame, "No courses available!");
                     return;
                 }
-
                 ArrayList<Course> available = new ArrayList<>();
                 for (Course c : courses.getItems()) {
                     boolean already = false;
@@ -90,16 +79,13 @@ public class AddStudentListener implements ActionListener {
                     if (!already)
                         available.add(c);
                 }
-
                 if (available.isEmpty()) {
                     JOptionPane.showMessageDialog(parentFrame, "All courses added!");
                     return;
                 }
-
                 String[] options = new String[available.size()];
                 for (int i = 0; i < available.size(); i++)
                     options[i] = available.get(i).getCourseCode() + " - " + available.get(i).getTitle();
-
                 JComboBox<String> combo = new JComboBox<>(options);
                 JTextField marksField = new JTextField();
                 Object[] input = new Object[4];
@@ -107,10 +93,7 @@ public class AddStudentListener implements ActionListener {
                 input[1] = combo;
                 input[2] = "Marks:";
                 input[3] = marksField;
-
-                int res = JOptionPane.showConfirmDialog(parentFrame, input, "Add Result",
-                        JOptionPane.OK_CANCEL_OPTION);
-
+                int res = JOptionPane.showConfirmDialog(parentFrame, input, "Add Result", JOptionPane.OK_CANCEL_OPTION);
                 if (res == JOptionPane.OK_OPTION) {
                     try {
                         Course selectedCourse = available.get(combo.getSelectedIndex());
@@ -124,7 +107,6 @@ public class AddStudentListener implements ActionListener {
                 }
             }
         });
-
         saveBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (nameField.getText().trim().isEmpty() || specificField.getText().trim().isEmpty()
@@ -132,33 +114,26 @@ public class AddStudentListener implements ActionListener {
                     JOptionPane.showMessageDialog(dialog, "Fill all fields and add at least one result!");
                     return;
                 }
-
                 Transcript t = new Transcript();
                 t.setResults(results);
-
                 String program = (String) programBox.getSelectedItem();
                 Student s = null;
-                if(program.equals("Science")){
+                if (program.equals("Science")) {
                     s = new ScienceStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
-                }
-                else if (program.equals("Arts")){
+                } else if (program.equals("Arts")) {
                     s = new ArtsStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
-                }
-                else{
+                } else {
                     s = new EngineeringStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
                 }
                 students.addItem(s);
                 studentModel.addRow(new Object[] { s.getStudentId(), s.getName(), s.getProgram(),
                         String.format("%.2f", s.calculateGPA()), s.calculateGrade() });
-
                 ArrayList<RecordList<Student>> wrapper = new ArrayList<>();
                 wrapper.add(students);
                 studentStore.saveToFile("students.dat", wrapper);
-
                 dialog.dispose();
             }
         });
-
         dialog.setVisible(true);
     }
 }

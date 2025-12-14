@@ -5,6 +5,7 @@ public abstract class Student implements ResultCalculator, Serializable{
     protected String name;
     protected String program;
     protected Transcript t;
+    protected boolean feePaid;
     private static int studentCounter = 0;
 
     public Student() {
@@ -13,14 +14,16 @@ public abstract class Student implements ResultCalculator, Serializable{
         setName("Unknown");
         setProgram("Unknown");
         setT(null);
+        setFeePaid(false);
     }
 
-    public Student(String name, String program, Transcript t) {
+    public Student(String name, String program, Transcript t, boolean feePaid) {
         studentCounter++;
         studentId = "S" + (studentCounter);
         setName(name);
         setProgram(program);
         setT(t);
+        setFeePaid(feePaid);
     }
 
     public void setName(String name) {
@@ -78,8 +81,11 @@ public abstract class Student implements ResultCalculator, Serializable{
         }
     }
 
-    public int getTotalStudent(){
-        return studentCounter;
+    public boolean isFeePaid() {
+        return feePaid;
+    }
+    public void setFeePaid(boolean feePaid) {
+        this.feePaid = feePaid;
     }
 
     public double calculateGPA() {
@@ -127,9 +133,17 @@ public abstract class Student implements ResultCalculator, Serializable{
 
     @Override
     public String toString() {
+        String feeStatus = "";
+        if (feePaid) {
+            feeStatus = "Paid";
+        }else{
+            feeStatus = "Due";
+        }
+
         return "Student ID: " + studentId +
                 "\nName: " + name +
                 "\nProgram: " + program +
-                "\nTranscript Details: " + t.toString();
+                "\nTranscript Details: " + t.toString() +
+                "Fee Status: " + feeStatus;
     }
 }

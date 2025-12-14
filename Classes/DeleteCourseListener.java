@@ -9,13 +9,17 @@ public class DeleteCourseListener implements ActionListener {
     private DefaultTableModel courseModel;
     private RecordList<Course> courses;
     private DataStore<RecordList<Course>> courseStore;
+    private JLabel totalCrsLbl;
 
-    public DeleteCourseListener(JTable courseTable, DefaultTableModel courseModel,
-                                RecordList<Course> courses, DataStore<RecordList<Course>> courseStore) {
+    public DeleteCourseListener(JTable courseTable, DefaultTableModel courseModel, RecordList<Course> 
+        courses, DataStore<RecordList<Course>> courseStore, JLabel totalCrsLbl) {
         this.courseTable = courseTable;
         this.courseModel = courseModel;
         this.courses = courses;
         this.courseStore = courseStore;
+        this.totalCrsLbl = totalCrsLbl;
+        this.totalCrsLbl.setText("Total Courses: " + Course.getTotalCourses());
+
     }
 
     @Override
@@ -31,6 +35,8 @@ public class DeleteCourseListener implements ActionListener {
             Course c = courses.getItems().get(row);
             courses.removeItem(c.getCourseCode());
             courseModel.removeRow(row);
+            Course.decrementCourseCounter();
+            totalCrsLbl.setText("Total Courses: " + Course.getTotalCourses());
 
             try {
                 ArrayList<RecordList<Course>> temp = new ArrayList<>();
