@@ -5,16 +5,16 @@ public class Transcript implements Serializable {
     private ArrayList<ResultEntry> results;
 
     public Transcript() {
-        results = new ArrayList<>();
+        results = new ArrayList<ResultEntry>();
     }
 
     public Transcript(ArrayList<ResultEntry> results) {
-        setResults(results);
+        setResults(results); 
     }
 
     public void setResults(ArrayList<ResultEntry> results) {
         if (results == null) {
-            this.results = new ArrayList<>();
+            this.results = new ArrayList<ResultEntry>();
         } else {
             this.results = results;
         }
@@ -25,32 +25,41 @@ public class Transcript implements Serializable {
     }
 
     public void addResultEntry(ResultEntry r) {
-        if (r == null || r.getCourse() == null) {
-            throw new IllegalArgumentException("ResultEntry or Course cannot be null");
+        if (r == null) {
+            throw new IllegalArgumentException("ResultEntry cannot be null");
+        } else if (r.getCourse() == null) {
+            throw new IllegalArgumentException("Course in ResultEntry cannot be null");
+        } else if (r.getMarksObtained() < 0 || r.getMarksObtained() > 100) {
+            throw new IllegalArgumentException("Marks must be between 0 and 100");
+        } else {
+            results.add(r);
         }
-        if (r.getMarksObtained() < 0 || r.getMarksObtained() > 100) {
-            throw new IllegalArgumentException("Marks must be 0-100");
-        }
-        results.add(r);
     }
 
-    // Calculate GPA **per course**
-    public ArrayList<Double> getCourseGPAs() {
-        ArrayList<Double> gpas = new ArrayList<>();
-        for (ResultEntry r : results) {
-            double courseGPA = (r.getMarksObtained() / 100.0) * 4; // 0-4 scale
-            gpas.add(courseGPA);
-        }
-        return gpas;
-    }
-
-    // Total Marks
     public double getTotalMarks() {
-        double total = 0;
+        double total = 0.0;
         for (ResultEntry r : results) {
             total += r.getMarksObtained();
         }
         return total;
+    }
+
+    public double getGPA() {
+        if (results.isEmpty()) return 0.0;
+
+        double totalGPA = 0.0;
+        int totalCredits = 0;
+
+        for (ResultEntry r : results) {
+            int creditHours = r.getCourse().getCreditHours();
+            double marks = r.getMarksObtained();
+
+            double courseGPA = (marks / 100.0) * 4; 
+            totalGPA += courseGPA * creditHours;     
+            totalCredits += creditHours;
+        }
+
+        return totalCredits == 0 ? 0.0 : totalGPA / totalCredits;
     }
 
     @Override
@@ -62,10 +71,11 @@ public class Transcript implements Serializable {
             s = s + "Course Code: " + r.getCourse().getCourseCode()
                 + " | Course: " + r.getCourse().getTitle()
                 + " | Credit Hours: " + r.getCourse().getCreditHours()
-                + " | Marks: " + r.getMarksObtained()
-                + " | GPA: " + String.format("%.2f", (r.getMarksObtained() / 100.0) * 4) + "\n";
+                + " | Marks Obtained: " + r.getMarksObtained() + "\n";
         }
         s = s + "Total Marks: " + getTotalMarks() + "\n";
+        s = s + "GPA: " + String.format("%.2f", getGPA()) + "\n";
+
         return s;
     }
 }
