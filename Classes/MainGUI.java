@@ -15,15 +15,18 @@ public class MainGUI {
         RecordList<Student> students;
         RecordList<Course> courses;
 
-        if (loadedStudents.isEmpty()){
+        // Fixed if-else braces
+        if (loadedStudents.isEmpty()) {
             students = new RecordList<>();
-        else
+        } else {
             students = loadedStudents.get(0);
+        }
 
-        if (loadedCourses.isEmpty())
+        if (loadedCourses.isEmpty()) {
             courses = new RecordList<>();
-        else
+        } else {
             courses = loadedCourses.get(0);
+        }
 
         if (students.getItems().isEmpty()) {
             preloadData(students, courses, studentStore, courseStore);
@@ -41,38 +44,42 @@ public class MainGUI {
         for (Student s : students.getItems()) {
             if (s.isFeePaid()) {
                 studentModel.addRow(new Object[] {
-                    s.getStudentId(),
-                    s.getName(),
-                    s.getProgram(),
-                    String.format("%.2f", s.calculateGPA()),
-                    s.calculateGrade()
-            });
-            }else{
+                        s.getStudentId(),
+                        s.getName(),
+                        s.getProgram(),
+                        String.format("%.2f", s.calculateGPA()),
+                        s.calculateGrade()
+                });
+            } else {
                 studentModel.addRow(new Object[] {
-                    s.getStudentId(),
-                    s.getName(),
-                    s.getProgram(),
-                    "Fee Pending",
-                    "---"
-            });
-            } 
+                        s.getStudentId(),
+                        s.getName(),
+                        s.getProgram(),
+                        "Fee Pending",
+                        "---"
+                });
+            }
         }
 
         JPanel studentPanel = new JPanel(new BorderLayout());
         JScrollPane p = new JScrollPane(studentTable);
         studentPanel.add(p, BorderLayout.CENTER);
+
         JPanel sBtns = new JPanel();
         JButton viewTranscriptBtn = new JButton("View Transcript");
         JButton addStudentBtn = new JButton("Add Student");
         JButton delStudentBtn = new JButton("Delete Student");
-        JButton viewTranscriptBtn = new JButton("View Transcript");
-        sBtns.add(viewTranscriptBtn); // Add next to Add/Delete buttons
-        ViewTranscriptListener viewListener = new ViewTranscriptListener(studentTable, students);
-        viewTranscriptBtn.addActionListener(viewListener);
+        JButton payFeeBtn = new JButton("Pay Fee"); // Added missing button
+
+        sBtns.add(viewTranscriptBtn);
         sBtns.add(addStudentBtn);
         sBtns.add(delStudentBtn);
         sBtns.add(payFeeBtn);
+
         studentPanel.add(sBtns, BorderLayout.SOUTH);
+
+        ViewTranscriptListener viewListener = new ViewTranscriptListener(studentTable, students);
+        viewTranscriptBtn.addActionListener(viewListener);
 
         // ---------------- COURSES TAB ----------------
         String[] courseCols = {"Code", "Title", "Credits", "Instructor" };
@@ -91,22 +98,25 @@ public class MainGUI {
         JPanel coursePanel = new JPanel(new BorderLayout());
         JScrollPane courseScroll = new JScrollPane(courseTable);
         coursePanel.add(courseScroll, BorderLayout.CENTER);
+
         JButton addCourseBtn = new JButton("Add Course");
         JButton delCourseBtn = new JButton("Delete Course");
         JLabel totalCrsLbl = new JLabel("Total Courses: " + Course.getTotalCourses());
+
         JPanel cBtns = new JPanel();
         cBtns.add(addCourseBtn);
         cBtns.add(delCourseBtn);
         cBtns.add(totalCrsLbl);
         coursePanel.add(cBtns, BorderLayout.SOUTH);
 
+        // ---------------- TABS ----------------
         JTabbedPane tabs = new JTabbedPane();
         tabs.addTab("Students", studentPanel);
         tabs.addTab("Courses", coursePanel);
         frame.add(tabs);
         frame.setVisible(true);
 
-        // ---------------- Student ----------------
+        // ---------------- STUDENT BUTTON LISTENERS ----------------
         AddStudentListener addListener = new AddStudentListener(frame, studentModel, students, studentStore, courses);
         addStudentBtn.addActionListener(addListener);
 
@@ -116,7 +126,7 @@ public class MainGUI {
         PayFeeListener payFeeListener = new PayFeeListener(studentTable, studentModel, students, studentStore);
         payFeeBtn.addActionListener(payFeeListener);
 
-        // ---------------- CourseBtnListeners ----------------
+        // ---------------- COURSE BUTTON LISTENERS ----------------
         AddCourseListener addCourseListener = new AddCourseListener(frame, courseModel, courses, courseStore, totalCrsLbl);
         addCourseBtn.addActionListener(addCourseListener);
 
