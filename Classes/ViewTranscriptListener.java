@@ -44,8 +44,7 @@ public class ViewTranscriptListener implements ActionListener {
 
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(scroll, BorderLayout.CENTER);
-
-        // Add GPA and Grade at the bottom
+        
         JLabel gpaLabel = new JLabel("GPA: " + String.format("%.2f", s.calculateGPA()) +
                                      " | Grade: " + s.calculateGrade());
         panel.add(gpaLabel, BorderLayout.SOUTH);

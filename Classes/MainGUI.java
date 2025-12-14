@@ -6,7 +6,6 @@ import java.util.ArrayList;
 public class MainGUI {
     public static void main(String[] args) {
 
-        // ---------------- Data Stores ----------------
         DataStore<RecordList<Student>> studentStore = new DataStore<>();
         DataStore<RecordList<Course>> courseStore = new DataStore<>();
 
@@ -16,22 +15,24 @@ public class MainGUI {
         RecordList<Student> students;
         RecordList<Course> courses;
 
-        if (loadedStudents.isEmpty())
+        if (loadedStudents.isEmpty()){
             students = new RecordList<>();
-        else
+        }
+        else{
             students = loadedStudents.get(0);
+        }
 
-        if (loadedCourses.isEmpty())
+        if (loadedCourses.isEmpty()){
             courses = new RecordList<>();
-        else
+        }
+        else{
             courses = loadedCourses.get(0);
+        }
 
-        // Preload data if empty
         if (students.getItems().isEmpty()) {
             preloadData(students, courses, studentStore, courseStore);
         }
 
-        // ---------------- GUI ----------------
         JFrame frame = new JFrame("Student Result Management System");
         frame.setSize(1000, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -59,7 +60,7 @@ public class MainGUI {
         JButton addStudentBtn = new JButton("Add Student");
         JButton delStudentBtn = new JButton("Delete Student");
         JButton viewTranscriptBtn = new JButton("View Transcript");
-        sBtns.add(viewTranscriptBtn); // Add next to Add/Delete buttons
+        sBtns.add(viewTranscriptBtn);
         ViewTranscriptListener viewListener = new ViewTranscriptListener(studentTable, students);
         viewTranscriptBtn.addActionListener(viewListener);
         sBtns.add(addStudentBtn);
@@ -90,18 +91,15 @@ public class MainGUI {
         cBtns.add(delCourseBtn);
         coursePanel.add(cBtns, BorderLayout.SOUTH);
 
-        // ---------------- TABS ----------------
         JTabbedPane tabs = new JTabbedPane();
         tabs.addTab("Students", studentPanel);
         tabs.addTab("Courses", coursePanel);
         frame.add(tabs);
         frame.setVisible(true);
 
-        // ---------------- Student ----------------
         AddStudentListener addListener = new AddStudentListener(frame, studentModel, students, studentStore, courses);
         addStudentBtn.addActionListener(addListener);
 
-        // ---------------- Courde ----------------
         DeleteStudentListener deleteListener = new DeleteStudentListener(studentTable, studentModel, students, studentStore);
         delStudentBtn.addActionListener(deleteListener);
 
@@ -112,9 +110,7 @@ public class MainGUI {
         delCourseBtn.addActionListener(deleteCourseListener);
     }
 
-    public static void preloadData(RecordList<Student> students, RecordList<Course> courses,
-                                   DataStore<RecordList<Student>> studentStore,
-                                   DataStore<RecordList<Course>> courseStore) {
+    public static void preloadData(RecordList<Student> students, RecordList<Course> courses, DataStore<RecordList<Student>> studentStore,DataStore<RecordList<Course>> courseStore) {
 
         CourseInstructor csInstructor = new CourseInstructor("Dr. Ahmed", "PhD");
         CourseInstructor phyInstructor = new CourseInstructor("Prof. Khan", "MSc");

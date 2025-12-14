@@ -12,7 +12,7 @@ public class AddStudentListener implements ActionListener {
     private RecordList<Course> courses;
 
     public AddStudentListener(JFrame frame, DefaultTableModel model, RecordList<Student> students,
-                              DataStore<RecordList<Student>> store, RecordList<Course> courses) {
+            DataStore<RecordList<Student>> store, RecordList<Course> courses) {
         this.parentFrame = frame;
         this.studentModel = model;
         this.students = students;
@@ -22,137 +22,141 @@ public class AddStudentListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // --- Labels and fields ---
-        JLabel nameLabel = new JLabel("Name:");
-        JLabel programLabel = new JLabel("Program:");
-        JLabel specificLabel = new JLabel();
         JTextField nameField = new JTextField();
+        JComboBox<String> programBox = new JComboBox<>();
+        programBox.addItem("Science");
+        programBox.addItem("Arts");
+        programBox.addItem("Engineering");
+
+        JLabel specificLabel = new JLabel("Specific:");
         JTextField specificField = new JTextField();
-        String[] programs = { "Science", "Arts", "Engineering" };
-        JComboBox<String> programBox = new JComboBox<>(programs);
-        JButton addResultBtn = new JButton("Add Result Entry");
 
-        // --- Result table ---
-        String[] resultCols = { "Course Code", "Course Title", "Marks" };
-        DefaultTableModel resultModel = new DefaultTableModel(resultCols, 0);
+        DefaultTableModel resultModel = new DefaultTableModel();
+        resultModel.addColumn("Course");
+        resultModel.addColumn("Marks");
+
         JTable resultTable = new JTable(resultModel);
-        JScrollPane resultScroll = new JScrollPane(resultTable);
+        ArrayList<ResultEntry> results = new ArrayList<>();
 
-        ArrayList<ResultEntry> tempResults = new ArrayList<>();
+        JButton addResultBtn = new JButton("Add Result");
+        JButton saveBtn = new JButton("Save Student");
 
-        // --- Panel setup ---
+        JScrollPane scrollPane = new JScrollPane(resultTable);
+
         JPanel panel = new JPanel(new GridLayout(0, 1));
-        panel.add(nameLabel);
+        panel.add(new JLabel("Name:"));
         panel.add(nameField);
-        panel.add(programLabel);
+        panel.add(new JLabel("Program:"));
         panel.add(programBox);
         panel.add(specificLabel);
         panel.add(specificField);
         panel.add(addResultBtn);
-        panel.add(resultScroll);
+        panel.add(scrollPane);
+        panel.add(saveBtn);
 
-        // --- Program selection listener ---
-        programBox.addActionListener(ev -> {
-            String program = (String) programBox.getSelectedItem();
-            if (program.equalsIgnoreCase("Science"))
-                specificLabel.setText("Lab Group:");
-            else if (program.equalsIgnoreCase("Arts"))
-                specificLabel.setText("Major Art Form:");
-            else
-                specificLabel.setText("Internship Company:");
-            specificField.setText("");
+        JDialog dialog = new JDialog(parentFrame, "Add Student", true);
+        dialog.setSize(450, 400);
+        dialog.setLocationRelativeTo(parentFrame);
+        dialog.add(panel, BorderLayout.CENTER);
+        programBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String program = (String) programBox.getSelectedItem();
+                if (program.equals("Science")){
+                    specificLabel.setText("Lab Group:");
+                }
+                else if (program.equals("Arts")){
+                    specificLabel.setText("Major Art:");
+                }
+                else{
+                    specificLabel.setText("Internship:");
+                }
+            }
         });
         programBox.setSelectedIndex(0);
 
-        // --- Dialog ---
-        JDialog dialog = new JDialog(parentFrame, "Add Student", true);
-        dialog.setSize(500, 450);
-        dialog.setLocationRelativeTo(parentFrame);
-        dialog.add(panel, BorderLayout.CENTER);
-
-        JButton saveBtn = new JButton("Save Student");
-        dialog.add(saveBtn, BorderLayout.SOUTH);
-
-        // --- Add Result Entry button ---
-        addResultBtn.addActionListener(ev -> {
-            if (courses.getItems().isEmpty()) {
-                JOptionPane.showMessageDialog(parentFrame, "No courses available!");
-                return;
-            }
-
-
-            ArrayList<Course> available = new ArrayList<>();
-            for (Course c : courses.getItems()) {  // use getItems()(exist inside RecordList) to get the ArrayList
-                boolean alreadyAdded = false;
-                for (ResultEntry r : tempResults) {
-                    if (r.getCourse().getCourseCode().equals(c.getCourseCode())) {
-                        alreadyAdded = true;
-                        break;
-                    }
+        addResultBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (courses.getItems().isEmpty()) {
+                    JOptionPane.showMessageDialog(parentFrame, "No courses available!");
+                    return;
                 }
-                if (!alreadyAdded) available.add(c);
-            }
 
+                ArrayList<Course> available = new ArrayList<>();
+                for (Course c : courses.getItems()) {
+                    boolean already = false;
+                    for (ResultEntry r : results)
+                        if (r.getCourse().getCourseCode().equals(c.getCourseCode()))
+                            already = true;
+                    if (!already)
+                        available.add(c);
+                }
 
-            if (available.isEmpty()) {
-                JOptionPane.showMessageDialog(parentFrame, "All courses already added!");
-                return;
-            }
+                if (available.isEmpty()) {
+                    JOptionPane.showMessageDialog(parentFrame, "All courses added!");
+                    return;
+                }
 
-            String[] options = new String[available.size()];
-            for (int i = 0; i < available.size(); i++) {
-                options[i] = available.get(i).getCourseCode() + " - " + available.get(i).getTitle();
-            }
+                String[] options = new String[available.size()];
+                for (int i = 0; i < available.size(); i++)
+                    options[i] = available.get(i).getCourseCode() + " - " + available.get(i).getTitle();
 
-            JComboBox<String> combo = new JComboBox<>(options);
-            JTextField marks = new JTextField();
-            Object[] input = { "Select Course:", combo, "Marks:", marks };
+                JComboBox<String> combo = new JComboBox<>(options);
+                JTextField marksField = new JTextField();
+                Object[] input = new Object[4];
+                input[0] = "Select Course:";
+                input[1] = combo;
+                input[2] = "Marks:";
+                input[3] = marksField;
 
-            int result = JOptionPane.showConfirmDialog(parentFrame, input, "Add Result Entry",
-                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-            if (result == JOptionPane.OK_OPTION) {
-                try {
-                    int idx = combo.getSelectedIndex();
-                    Course selected = available.get(idx);
-                    double m = Double.parseDouble(marks.getText().trim());
-                    tempResults.add(new ResultEntry(selected, m));
-                    resultModel.addRow(new Object[] { selected.getCourseCode(), selected.getTitle(), m });
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(dialog, "Invalid input!");
+                int res = JOptionPane.showConfirmDialog(parentFrame, input, "Add Result",
+                        JOptionPane.OK_CANCEL_OPTION);
+
+                if (res == JOptionPane.OK_OPTION) {
+                    try {
+                        Course selectedCourse = available.get(combo.getSelectedIndex());
+                        double marks = Double.parseDouble(marksField.getText().trim());
+                        ResultEntry entry = new ResultEntry(selectedCourse, marks);
+                        results.add(entry);
+                        resultModel.addRow(new Object[] { selectedCourse.getCourseCode(), marks });
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(parentFrame, "Invalid input!");
+                    }
                 }
             }
         });
 
-        // --- Save Student button ---
-        saveBtn.addActionListener(ev -> {
-            if (nameField.getText().trim().isEmpty() || specificField.getText().trim().isEmpty()
-                    || tempResults.isEmpty()) {
-                JOptionPane.showMessageDialog(dialog, "Fill all fields & add at least one result!");
-                return;
+        saveBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (nameField.getText().trim().isEmpty() || specificField.getText().trim().isEmpty()
+                        || results.isEmpty()) {
+                    JOptionPane.showMessageDialog(dialog, "Fill all fields and add at least one result!");
+                    return;
+                }
+
+                Transcript t = new Transcript();
+                t.setResults(results);
+
+                String program = (String) programBox.getSelectedItem();
+                Student s = null;
+                if(program.equals("Science")){
+                    s = new ScienceStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
+                }
+                else if (program.equals("Arts")){
+                    s = new ArtsStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
+                }
+                else{
+                    s = new EngineeringStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
+                }
+                students.addItem(s);
+                studentModel.addRow(new Object[] { s.getStudentId(), s.getName(), s.getProgram(),
+                        String.format("%.2f", s.calculateGPA()), s.calculateGrade() });
+
+                ArrayList<RecordList<Student>> wrapper = new ArrayList<>();
+                wrapper.add(students);
+                studentStore.saveToFile("students.dat", wrapper);
+
+                dialog.dispose();
             }
-
-            String program = (String) programBox.getSelectedItem();
-            Transcript t = new Transcript();
-            t.setResults(tempResults);
-
-            Student s;
-            if (program.equalsIgnoreCase("Science"))
-                s = new ScienceStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
-            else if (program.equalsIgnoreCase("Arts"))
-                s = new ArtsStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
-            else
-                s = new EngineeringStudent(nameField.getText().trim(), program, t, specificField.getText().trim());
-
-            students.addItem(s);
-            studentModel.addRow(new Object[] { s.getStudentId(), s.getName(), s.getProgram(),
-                    String.format("%.2f", s.calculateGPA()), s.calculateGrade() });
-
-            // --- Wrap RecordList in ArrayList and save ---
-            ArrayList<RecordList<Student>> wrapper = new ArrayList<>();
-            wrapper.add(students);
-            studentStore.saveToFile("students.dat", wrapper);
-
-            dialog.dispose();
         });
 
         dialog.setVisible(true);
