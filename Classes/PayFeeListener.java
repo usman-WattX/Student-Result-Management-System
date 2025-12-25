@@ -4,13 +4,14 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class PayFeeListener implements ActionListener {
+    private JFrame parentFrame;
     private JTable table;
     private DefaultTableModel model;
     private RecordList<Student> students;
     private DataStore<RecordList<Student>> studentStore;
 
-    public PayFeeListener(JTable table, DefaultTableModel model, RecordList<Student> students,
-                          DataStore<RecordList<Student>> store) {
+    public PayFeeListener(JFrame parentFrame, JTable table, DefaultTableModel model, RecordList<Student> students, DataStore<RecordList<Student>> store) {
+        this.parentFrame = parentFrame;
         this.table = table;
         this.model = model;
         this.students = students;
@@ -21,17 +22,17 @@ public class PayFeeListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         int row = table.getSelectedRow();
         if (row == -1) {
-            JOptionPane.showMessageDialog(null, "Select a student!", "Pay Fee", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(parentFrame, "Select a student!", "Pay Fee", JOptionPane.PLAIN_MESSAGE);
             return;
         }
 
         Student s = students.getItems().get(row);
         if (s.isFeePaid()) {
-            JOptionPane.showMessageDialog(null, "Fee already paid!", "Pay Fee", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(parentFrame, "Fee already paid!", "Pay Fee", JOptionPane.PLAIN_MESSAGE);
             return;
         }
 
-        int confirm = JOptionPane.showConfirmDialog(null,
+        int confirm = JOptionPane.showConfirmDialog(parentFrame,
                 "Confirm fee payment for " + s.getName() + "?",
                 "Pay Fee", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 
@@ -44,7 +45,7 @@ public class PayFeeListener implements ActionListener {
             wrapper.add(students);
             studentStore.saveToFile("students.dat", wrapper);
 
-            JOptionPane.showMessageDialog(null, "Fee paid successfully!", "Pay Fee", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(parentFrame, "Fee paid successfully!", "Pay Fee", JOptionPane.PLAIN_MESSAGE);
         }
     }
 }

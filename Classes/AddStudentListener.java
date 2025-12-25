@@ -129,8 +129,14 @@ public class AddStudentListener implements ActionListener {
                     s = new EngineeringStudent(nameField.getText().trim(), program, t, feeStatus,specificField.getText().trim());
                 }
                 students.addItem(s);
-                studentModel.addRow(new Object[] { s.getStudentId(), s.getName(), s.getProgram(),
-                        String.format("%.2f", s.calculateGPA()), s.calculateGrade() });
+                if (feeStatus) {
+                    studentModel.addRow(new Object[] { s.getStudentId(), s.getName(), s.getProgram(),
+                        String.format("%.2f", s.calculateGPA()), s.calculateGrade() });    
+                }else{
+                    studentModel.addRow(new Object[] { s.getStudentId(), s.getName(), s.getProgram(),
+                        "Fee Pending", "---" });
+                }
+                
                 ArrayList<RecordList<Student>> wrapper = new ArrayList<>();
                 wrapper.add(students);
                 studentStore.saveToFile("students.dat", wrapper);

@@ -26,6 +26,10 @@ public abstract class Student implements ResultCalculator, Serializable {
         setFeePaid(feePaid);
     }
 
+    public static void setStudentCounter(int value){
+        studentCounter = value;
+    }
+
     public void setName(String name) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Name cannot be empty");

@@ -5,14 +5,15 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class DeleteCourseListener implements ActionListener {
+    private JFrame parentFrame;
     private JTable courseTable;
     private DefaultTableModel courseModel;
     private RecordList<Course> courses;
     private DataStore<RecordList<Course>> courseStore;
     private JLabel totalCrsLbl;
 
-    public DeleteCourseListener(JTable courseTable, DefaultTableModel courseModel, RecordList<Course> 
-        courses, DataStore<RecordList<Course>> courseStore, JLabel totalCrsLbl) {
+    public DeleteCourseListener(JFrame parentFrame, JTable courseTable, DefaultTableModel courseModel, RecordList<Course> courses, DataStore<RecordList<Course>> courseStore, JLabel totalCrsLbl) {
+        this.parentFrame = parentFrame;
         this.courseTable = courseTable;
         this.courseModel = courseModel;
         this.courses = courses;
@@ -27,7 +28,7 @@ public class DeleteCourseListener implements ActionListener {
         int row = courseTable.getSelectedRow();
 
         if (row == -1) {
-            JOptionPane.showMessageDialog(null, "Please select a course to delete.");
+            JOptionPane.showMessageDialog(parentFrame, "Please select a course to delete.");
             return;
         }
 
@@ -44,10 +45,10 @@ public class DeleteCourseListener implements ActionListener {
                 courseStore.saveToFile("courses.dat", temp);
             } catch (Exception ex) {
                 ex.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error saving file: " + ex.getMessage());
+                JOptionPane.showMessageDialog(parentFrame, "Error saving file: " + ex.getMessage());
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Selected row is invalid.");
+            JOptionPane.showMessageDialog(parentFrame, "Selected row is invalid.");
         }
     }
 }

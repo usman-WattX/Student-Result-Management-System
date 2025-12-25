@@ -5,10 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ViewTranscriptListener implements ActionListener {
+    private JFrame parentFrame;
     private JTable studentTable;
     private RecordList<Student> students;
 
-    public ViewTranscriptListener(JTable studentTable, RecordList<Student> students) {
+    public ViewTranscriptListener(JFrame parentFrame, JTable studentTable, RecordList<Student> students) {
+        this.parentFrame = parentFrame;
         this.studentTable = studentTable;
         this.students = students;
     }
@@ -17,19 +19,19 @@ public class ViewTranscriptListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         int row = studentTable.getSelectedRow();
         if (row == -1) {
-            JOptionPane.showMessageDialog(null, "Please select a student first.");
+            JOptionPane.showMessageDialog(parentFrame, "Please select a student first.");
             return;
         }
 
         Student s = students.getItems().get(row);
         if (s == null) {
-            JOptionPane.showMessageDialog(null, "Selected student not found.");
+            JOptionPane.showMessageDialog(parentFrame, "Selected student not found.");
             return;
         }
 
         Transcript t = s.getT();
         if (t == null || t.getResults().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No transcript data available for this student.");
+            JOptionPane.showMessageDialog(parentFrame, "No transcript data available for this student.");
             return;
         }
 
@@ -68,7 +70,7 @@ public class ViewTranscriptListener implements ActionListener {
         JDialog dialog = new JDialog();
         dialog.setTitle("Transcript of " + s.getName());
         dialog.setSize(400, 300);
-        dialog.setLocationRelativeTo(null);
+        dialog.setLocationRelativeTo(parentFrame);
         dialog.add(panel);
         dialog.setModal(true);
         dialog.setVisible(true);

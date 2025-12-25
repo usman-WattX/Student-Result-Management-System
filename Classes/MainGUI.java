@@ -19,6 +19,9 @@ public class MainGUI {
             students = new RecordList<>();
         } else {
             students = loadedStudents.get(0);
+            Student lastS = students.getItems().get(students.getItems().size() - 1);
+            String num = lastS.getStudentId().substring(1);
+            Student.setStudentCounter(Integer.parseInt(num));
         }
 
         if (loadedCourses.isEmpty()) {
@@ -64,22 +67,22 @@ public class MainGUI {
         JPanel studentPanel = new JPanel(new BorderLayout());
         JScrollPane p = new JScrollPane(studentTable);
         studentPanel.add(p, BorderLayout.CENTER);
-
         JPanel sBtns = new JPanel();
-        JButton viewTranscriptBtn = new JButton("View Transcript");
         JButton addStudentBtn = new JButton("Add Student");
+        JButton updStdntBtn = new JButton("Update Student");
+        JButton viewTranscriptBtn = new JButton("View Transcript");
+        JButton updTrscrptBtn = new  JButton("Update Transcript");
         JButton delStudentBtn = new JButton("Delete Student");
         JButton payFeeBtn = new JButton("Pay Fee");
 
-        sBtns.add(viewTranscriptBtn);
         sBtns.add(addStudentBtn);
+        sBtns.add(updStdntBtn);
+        sBtns.add(viewTranscriptBtn);
+        sBtns.add(updTrscrptBtn);
         sBtns.add(delStudentBtn);
         sBtns.add(payFeeBtn);
 
         studentPanel.add(sBtns, BorderLayout.SOUTH);
-
-        ViewTranscriptListener viewListener = new ViewTranscriptListener(studentTable, students);
-        viewTranscriptBtn.addActionListener(viewListener);
 
         // ---------------- COURSES TAB ----------------
         String[] courseCols = {"Code", "Title", "Credits", "Instructor" };
@@ -98,13 +101,14 @@ public class MainGUI {
         JPanel coursePanel = new JPanel(new BorderLayout());
         JScrollPane courseScroll = new JScrollPane(courseTable);
         coursePanel.add(courseScroll, BorderLayout.CENTER);
-
         JButton addCourseBtn = new JButton("Add Course");
+        JButton updCrsBtn = new JButton("Update Course");
         JButton delCourseBtn = new JButton("Delete Course");
         JLabel totalCrsLbl = new JLabel("Total Courses: " + Course.getTotalCourses());
 
         JPanel cBtns = new JPanel();
         cBtns.add(addCourseBtn);
+        cBtns.add(updCrsBtn);
         cBtns.add(delCourseBtn);
         cBtns.add(totalCrsLbl);
         coursePanel.add(cBtns, BorderLayout.SOUTH);
@@ -120,20 +124,32 @@ public class MainGUI {
         AddStudentListener addListener = new AddStudentListener(frame, studentModel, students, studentStore, courses);
         addStudentBtn.addActionListener(addListener);
 
-        DeleteStudentListener deleteListener = new DeleteStudentListener(studentTable, studentModel, students, studentStore);
+        UpdateStudentListener updtStdListener = new UpdateStudentListener(frame, studentTable, studentModel, students, studentStore);
+        updStdntBtn.addActionListener(updtStdListener);
+
+        DeleteStudentListener deleteListener = new DeleteStudentListener(frame, studentTable, studentModel, students, studentStore);
         delStudentBtn.addActionListener(deleteListener);
 
-        PayFeeListener payFeeListener = new PayFeeListener(studentTable, studentModel, students, studentStore);
+        ViewTranscriptListener viewListener = new ViewTranscriptListener(frame ,studentTable, students);
+        viewTranscriptBtn.addActionListener(viewListener);
+
+        UpdateTranscriptListener updTrnsListener = new  UpdateTranscriptListener(frame, studentTable, studentModel,students, studentStore);
+        updTrscrptBtn.addActionListener(updTrnsListener);
+
+        PayFeeListener payFeeListener = new PayFeeListener(frame ,studentTable, studentModel, students, studentStore);
         payFeeBtn.addActionListener(payFeeListener);
 
         // ---------------- COURSE BUTTON LISTENERS ----------------
         AddCourseListener addCourseListener = new AddCourseListener(frame, courseModel, courses, courseStore, totalCrsLbl);
         addCourseBtn.addActionListener(addCourseListener);
 
-        DeleteCourseListener deleteCourseListener = new DeleteCourseListener(courseTable, courseModel, courses, courseStore, totalCrsLbl);
+        UpdateCourseListener updtCrsListener = new UpdateCourseListener(frame, courseTable, courseModel, courses, courseStore);
+        updCrsBtn.addActionListener(updtCrsListener);
+
+        DeleteCourseListener deleteCourseListener = new DeleteCourseListener(frame, courseTable, courseModel, courses, courseStore, totalCrsLbl);
         delCourseBtn.addActionListener(deleteCourseListener);
     }
-
+    //Method to PreLoad Some Data
     public static void preloadData(RecordList<Student> students, RecordList<Course> courses,
         DataStore<RecordList<Student>> studentStore, DataStore<RecordList<Course>> courseStore) {
 
