@@ -84,7 +84,7 @@ This project provided hands-on experience with:
 ## Contributors
 
 - **Shaiza Anwar**
-- **Muhammad Usman**
+- **Muhammad Usman Ahmad**
 
 ---
 
